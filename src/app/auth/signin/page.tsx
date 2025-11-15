@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 const SignInPage = () => {
     return (
@@ -6,7 +7,7 @@ const SignInPage = () => {
             {/* LEFT SIDE IMAGE */}
             <div className="col-span-3 lg:flex items-center justify-center bg-[#E2ECF8] p-6">
                 <Image
-                    src="/signin-banner-Photoroom.png"
+                    src="/signin-page-banner-Photoroom.png"
                     alt="Signup Illustration"
                     width={600}
                     height={600}
@@ -15,51 +16,58 @@ const SignInPage = () => {
             </div>
 
             {/* RIGHT SIDE FORM signup-banner-Photoroom.png*/}
-            <div className="col-span-4 flex flex-col justify-center px-8 lg:px-20 py-10">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <div className="col-span-4 flex flex-col justify-center px-8 lg:px-20 py-10 w-4/5 mx-auto">
+                <div className='text-center'>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
                     Log in to your account
                 </h1>
                 <p className="text-gray-600 mb-10">
                     Start managing your tasks efficiently
                 </p>
+                </div>
 
                 <form className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label className='text-[#0C0C0C]' >Email </label>
                         <input
-                            type="text"
-                            placeholder="First Name"
-                            className="border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Last Name"
-                            className="border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            type="email"
+                            className="border border-gray-300 w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                         />
                     </div>
 
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        className="border w-full rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                    <div>
+                        <label className='text-[#0C0C0C]' >Password </label>
+                        <input
+                            type="password"
+                            className="border border-gray-300 w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                    </div>
 
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="border w-full rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                            <input
+                                id="remember-me"
+                                name="remember-me"
+                                type="checkbox"
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="remember-me" className="ml-2 block text-sm text-[#0C0C0C]">
+                                Remember Me
+                            </label>
+                        </div>
 
-                    <input
-                        type="password"
-                        placeholder="Confirm Password"
-                        className="border w-full rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                        <div className="text-sm">
+                            <Link href="#" className="text-blue-600 hover:text-blue-500">
+                                Forgot Your Password?
+                            </Link>
+                        </div>
+                    </div>
 
                     <button
                         type="submit"
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
                     >
-                        Sign Up
+                        Log In
                     </button>
                 </form>
 
