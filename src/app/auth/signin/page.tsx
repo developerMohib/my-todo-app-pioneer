@@ -31,6 +31,7 @@ const SignInPage = () => {
                         <label className='text-[#0C0C0C]' >Email </label>
                         <input
                             type="email"
+                            placeholder='Enter Your Email'
                             className="border border-gray-300 w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                         />
                     </div>
@@ -39,6 +40,7 @@ const SignInPage = () => {
                         <label className='text-[#0C0C0C]' >Password </label>
                         <input
                             type="password"
+                            placeholder='Enter Your Password'
                             className="border border-gray-300 w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
                         />
                     </div>

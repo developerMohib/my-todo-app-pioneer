@@ -188,18 +188,18 @@ const SignUpPage = () => {
                                 : 'border-gray-300 focus:ring-blue-500'
                                 }`}
                         />
-                        <span
+                        {formData.password && (<span
                             onClick={() => setShowPassword(!showPassword)}
                             className='absolute right-3 top-8 cursor-pointer text-gray-500 hover:text-gray-700'
                         >
                             {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
-                        </span>
+                        </span>)}
                         {errors.password && (
                             <p className="text-red-500 text-sm mt-1">{errors.password}</p>
                         )}
                     </div>
 
-                    <div>
+                    <div className='relative'>
                         <label className='text-[#0C0C0C]'>Confirm Password</label>
                         <input
                             name="confirmPassword"
@@ -211,6 +211,7 @@ const SignUpPage = () => {
                                 : 'border-gray-300 focus:ring-blue-500'
                                 }`}
                         />
+                        
                         {errors.confirmPassword && (
                             <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
                         )}
