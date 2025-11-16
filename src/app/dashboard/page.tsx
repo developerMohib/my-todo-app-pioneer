@@ -1,11 +1,13 @@
-import React from 'react';
+export default function DashboardPage() {
+  return (
+    <div>
+      <h2 className="text-2xl font-semibold mb-4">Dashboard Overview</h2>
 
-const page = () => {
-    return (
-        <div>
-            <h1>dashboard home page</h1>
-        </div>
-    );
-};
-
-export default page;
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-white p-6 rounded-xl shadow">Card 1</div>
+        <div className="bg-white p-6 rounded-xl shadow">Card 2</div>
+        <div className="bg-white p-6 rounded-xl shadow">Card 3</div>
+      </div>
+    </div>
+  );
+}
