@@ -1,6 +1,9 @@
 export default function DashboardPage() {
   return (
-    <div>
+    <div className="p-8 bg-white rounded-lg">
+        <div>
+            
+        </div>
       <h2 className="text-2xl font-semibold mb-4">Dashboard Overview</h2>
 
       <div className="grid grid-cols-3 gap-4">

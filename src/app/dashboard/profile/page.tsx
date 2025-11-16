@@ -27,41 +27,34 @@ export default function ProfileDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen p-8 bg-white rounded-lg">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">Account Information</h1>
-                    <p className="text-gray-600 mt-2">Manage your personal information and preferences</p>
+                    <hr className='h-0.5 w-3/12 bg-blue-500' />
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="bg-white rounded-xl overflow-hidden">
                     <div className="p-6 sm:p-8">
                         <form onSubmit={handleSubmit} className="space-y-8">
                             {/* Profile Photo Section */}
-                            <div className="flex flex-col sm:flex-row items-center gap-6 pb-8 border-b border-gray-200">
-                                <div className="relative">
-                                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center border-4 border-white shadow-lg">
-                                        <span className="text-2xl font-semibold text-blue-600">
-                                            {formData.firstName ? formData.firstName.charAt(0).toUpperCase() : 'U'}
-                                        </span>
+                            <div className="flex flex-col sm:flex-row items-center gap-1 rounded-xl border border-gray-200 w-1/2 justify-start">
+                                <div className="relative p-8">
+                                    <div className="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-start">
                                     </div>
                                     <button
                                         type="button"
-                                        className="absolute -bottom-2 -right-2 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+                                        className="absolute bottom-8 right-9 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
                                     >
                                         <Camera size={16} />
                                     </button>
                                 </div>
 
                                 <div className="flex-1 text-center sm:text-left">
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Profile Photo</h3>
-                                    <p className="text-gray-600 text-sm mb-4">
-                                        JPG, GIF or PNG. Max size of 5MB
-                                    </p>
                                     <button
                                         type="button"
-                                        className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                                        className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 transition-colors"
                                     >
                                         <Upload size={16} />
                                         Upload New Photo
@@ -70,7 +63,7 @@ export default function ProfileDashboard() {
                             </div>
 
                             {/* Form Fields */}
-                            <div className="space-y-6">
+                            <div className="space-y-6 border border-gray-200 p-6 rounded-xl">
                                 {/* Name Row */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div>
@@ -82,8 +75,7 @@ export default function ProfileDashboard() {
                                             name="firstName"
                                             value={formData.firstName}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                            placeholder="Enter your first name"
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                         />
                                     </div>
                                     <div>
@@ -95,8 +87,7 @@ export default function ProfileDashboard() {
                                             name="lastName"
                                             value={formData.lastName}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                            placeholder="Enter your last name"
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                         />
                                     </div>
                                 </div>
@@ -111,8 +102,7 @@ export default function ProfileDashboard() {
                                         name="email"
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                        placeholder="Enter your email address"
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                     />
                                 </div>
 
@@ -127,8 +117,7 @@ export default function ProfileDashboard() {
                                             name="address"
                                             value={formData.address}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                            placeholder="Enter your address"
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                         />
                                     </div>
                                     <div>
@@ -140,8 +129,7 @@ export default function ProfileDashboard() {
                                             name="contactNumber"
                                             value={formData.contactNumber}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                            placeholder="Enter your phone number"
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                         />
                                     </div>
                                 </div>
@@ -156,25 +144,25 @@ export default function ProfileDashboard() {
                                         name="birthday"
                                         value={formData.birthday}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                     />
                                 </div>
-                            </div>
 
-                            {/* Action Buttons */}
-                            <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
-                                <button
-                                    type="submit"
-                                    className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                                >
-                                    Save Changes
-                                </button>
-                                <button
-                                    type="button"
-                                    className="flex-1 bg-white text-gray-700 py-3 px-6 rounded-lg font-semibold border border-gray-300 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                                >
-                                    Cancel
-                                </button>
+                                {/* Action Buttons */}
+                                <div className="flex flex-col sm:flex-row gap-4 pt-6 w-2/3 mx-auto">
+                                    <button
+                                        type="submit"
+                                        className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                                    >
+                                        Save Changes
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="flex-1 bg-gray-400 text-white py-3 px-6 rounded-lg font-semibold border border-gray-300 hover:bg-gray-600 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
