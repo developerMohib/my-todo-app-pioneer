@@ -1,5 +1,5 @@
 "use client"
-import { ArrowDownUp, Search, Trash } from "lucide-react";
+import { ArrowDownUp, PenLine, Search, Trash, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -121,6 +121,17 @@ const TodoPage = () => {
     expiresIn10: false,
     expiresIn30: false
   });
+
+
+
+  const handleTodoEdit = async (id: string) => {
+    console.log('edit todo', id)
+  }
+  const handleTodoDelete = async (id: string) => {
+    console.log('delete todo', id)
+  }
+
+
   const handleFilterChange = (filterName: keyof typeof filters) => {
     setFilters(prev => ({
       ...prev,
@@ -140,6 +151,15 @@ const TodoPage = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+
+  if (initialTodos.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center mt-10 bg-red-600 rounded-lg min-h-screen">
+        <Image src={"/icon-no-projects.png"} alt="No Todos Yet" width={400} height={400} className="h-40 w-auto" />
+        <p>No Todo Yet</p>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -199,130 +219,127 @@ const TodoPage = () => {
 
       </div>
 
-      <div className="mt-10 bg-white rounded-lg">
-        {initialTodos && initialTodos.length > 0 ? (
-          initialTodos.map((todo) => (
-            <div key={todo.id} className="p-4 hover:bg-gray-50 transition-colors">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    // onChange={} 
-                    readOnly
-                    checked={todo.completed}
-                    className="w-4 h-4 rounded border-gray-300"
-                  />
-                  <div>
-                    <h3 className={`font-medium ${todo.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
-                      {todo.title}
-                    </h3>
-                    <p className="text-sm text-gray-600">{todo.description}</p>
-                    {todo.dueDate && (
-                      <p className="text-xs text-gray-500">
-                        Due: {todo.dueDate.toLocaleDateString()}
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${todo.priority === 'high' ? 'bg-red-100 text-red-800' :
-                  todo.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-green-100 text-green-800'
+      <h1 className="mt-10 mb-3 font-semibold">Your Task</h1>
+      <div className="bg-white rounded-lg">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {initialTodos && initialTodos.map((task) => (
+            <div
+              key={task.id}
+              className="p-5 rounded-xl bg-white shadow-sm border border-gray-100 hover:shadow-md transition"
+            >
+              <div className="flex items-start justify-between">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {task.title}
+                </h2>
+
+                {/* Priority Badge */}
+                <div className="flex items-center gap-3"><span className={`px-2 py-1 rounded-lg text-xs font-medium ${task.priority === 'high' ? 'text-red-600 bg-[#FEE2E2]' :
+                  task.priority === 'medium' ? 'bg-green-100 text-green-800' :
+                    'bg-yellow-100 text-yellow-800'
                   }`}>
-                  {todo.priority}
-                </span>
+                  {task.priority}
+                </span> <Image className="h-3 w-auto" src={"/grid4.png"} alt="Grid" width={40} height={40} /> </div>
+              </div>
+              <p className="text-sm text-gray-600 mt-2">{task.description}</p>
+
+              {/* Action Icons */}
+              <div className="flex items-center justify-between gap-3 mt-4">
+                <div > {task.dueDate && (
+                  <p className="text-xs text-gray-500">
+                    Due: {task.dueDate.toLocaleDateString()}
+                  </p>
+                )} </div>
+                <div className="flex items-center gap-3">
+                  <button onClick={() => handleTodoEdit(task.id)} className="p-2 rounded-md bg-blue-50 hover:bg-blue-100 transition">
+                    <PenLine size={16} className="text-blue-600" />
+                  </button>
+
+                  <button onClick={() => handleTodoDelete(task.id)} className="p-2 rounded-md bg-red-50 hover:bg-red-100 transition">
+                    <Trash2 size={16} className="text-red-600" />
+                  </button>
+                </div>
               </div>
             </div>
-          ))
-        ) : (
-          <div className="flex flex-col items-center justify-center mt-10 bg-white rounded-lg min-h-screen">
-            <Image src={"/icon-no-projects.png"} alt="No Todos Yet" width={400} height={400} className="h-40 w-auto" />
-            <p>No Todo Yet</p>
-          </div>
-        )}
+          ))}
+        </div>
       </div>
 
-      <div ref={dropdownRef}>
-        {/* Modal */}
-        {openModal && (
+      {/* Modal */}
+      {openModal && (
+        <div
+          className="fixed inset-0 z-50 w-1/2 mx-auto justify-center"
+          role="dialog"
+          aria-modal="true"
+        >
+          {/* Overlay */}
           <div
-            className="fixed inset-0 z-50 w-1/2 mx-auto"
-            role="dialog"
-            aria-modal="true"
-          >
-            {/* Overlay */}
-            <div
-              onClick={() => setOpenModal(!openModal)}
-              className="fixed inset-0 bg-gray-500 bg-opacity-20 transition-opacity"
-            />
-            <div className="bg-white rounded-lg relative">
-              <div className="flex items-start justify-between p-5">
-                <h3 className="text-xl font-semibold">
-                  Add New Task
-                </h3>
-                <button onClick={() => setOpenModal(false)} type="button" className="text-[#000000] bg-transparent hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center underline" data-modal-toggle="product-modal">
-                  Go Back
-                </button>
-              </div>
-              <div className="p-6 space-y-6">
-                <form action="#">
-                  <div className="">
-                    <label htmlFor="product-name" className="text-sm font-medium text-[#0C0C0C] block mb-2">Title</label>
-                    <input type="text" name="product-name" id="product-name" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required />
-                  </div>
-                  <div className="my-5">
-                    <label htmlFor="brand" className="text-sm font-medium text-gray-900 block mb-2">Date</label>
-                    <input type="text" name="brand" id="brand" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required />
-                  </div>
+            onClick={() => setOpenModal(!openModal)}
+            className="fixed inset-0 bg-black/70 transition-opacity"
+          />
+          <div className="bg-white rounded-lg relative">
+            <div className="flex items-start justify-between p-5 pb-3">
+              <h3 className="text-xl font-semibold">
+                Add New Task
+              </h3>
+              <button onClick={() => setOpenModal(false)} type="button" className="text-[#000000] bg-transparent hover:text-gray-900 rounded-lg text-sm ml-auto inline-flex items-center underline" data-modal-toggle="product-modal">
+                Go Back
+              </button>
+            </div>
+            <div className="px-5 space-y-6">
+              <form action="#">
+                <div className="">
+                  <label htmlFor="product-name" className="text-sm font-medium text-[#0C0C0C] block mb-2">Title</label>
+                  <input type="text" name="product-name" id="product-name" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required />
+                </div>
+                <div className="my-5">
+                  <label htmlFor="brand" className="text-sm font-medium text-gray-900 block mb-2">Date</label>
+                  <input type="text" name="brand" id="brand" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required />
+                </div>
 
-                  <div className="my-5">
-                    <p>Priority</p>
+                <div className="my-5">
+                  <p>Priority</p>
 
-                    <div className="grid grid-cols-3 my-2">
-                      <div className="flex items-center">
-                        <span className="w-2 h-2 bg-red-500 rounded-full mr-1"></span>
-                        <label htmlFor="terms" className="mr-2 block text-sm text-[#4B5563]">
-                          Extreme
-                        </label>
-                        <input id="terms" name="terms" type="checkbox" required className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded" />
-                      </div>
-                      <div className="flex items-center">
-                        <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
-                        <label htmlFor="terms" className="mr-2 block text-sm text-[#4B5563]">
-                         Modarate
-                        </label>
-                        <input id="terms" name="terms" type="checkbox" required className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded" />
-                      </div>
-                      <div className="flex items-center">
-                        <span className="w-2 h-2 bg-yellow-500 rounded-full mr-1"></span>
-                        <label htmlFor="terms" className="mr-2 block text-sm text-[#4B5563]">
-                          Low
-                        </label>
-                        <input id="terms" name="terms" type="checkbox" required className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded" />
-                      </div>
+                  <div className="grid grid-cols-3 my-2">
+                    <div className="flex items-center">
+                      <span className="w-2 h-2 bg-red-500 rounded-full mr-1"></span>
+                      <label htmlFor="terms" className="mr-2 block text-sm text-[#4B5563]">
+                        Extreme
+                      </label>
+                      <input id="priority-extreme" name="terms" type="checkbox" required className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded" />
+                    </div>
+                    <div className="flex items-center">
+                      <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                      <label htmlFor="terms" className="mr-2 block text-sm text-[#4B5563]">
+                        Modarate
+                      </label>
+                      <input id="priority-modarate" name="terms" type="checkbox" required className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded" />
+                    </div>
+                    <div className="flex items-center">
+                      <span className="w-2 h-2 bg-yellow-500 rounded-full mr-1"></span>
+                      <label htmlFor="terms" className="mr-2 block text-sm text-[#4B5563]">
+                        Low
+                      </label>
+                      <input id="priority-low" name="terms" type="checkbox" required className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded" />
                     </div>
                   </div>
+                </div>
 
-                  <div className="col-span-full ">
-                    <label htmlFor="product-details" className="text-sm font-medium text-gray-900 block mb-2">Task Description</label>
-                    <textarea id="product-details" rows={6} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-4" placeholder="Start writtin here..." defaultValue={""} />
-                  </div>
-                </form>
-              </div>
-              <div className="p-6 border-t border-gray-200 rounded-b flex justify-between items-center">
-                <button className="text-white bg-[#5272FF] hover:bg-cyan-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">Save</button>
-                <button className="text-white bg-[#EE0039] hover:bg-red-600 font-medium rounded-lg text-sm px-3 py-2.5 text-center" type="submit">
-                  <Trash />
-                </button>
-              </div>
+                <div className="col-span-full ">
+                  <label htmlFor="product-details" className="text-sm font-medium text-gray-900 block mb-2">Task Description</label>
+                  <textarea id="product-details" rows={6} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-4" placeholder="Start writtin here..." defaultValue={""} />
+                </div>
+              </form>
+            </div>
+            <div className="p-6 border-t border-gray-200 rounded-b flex justify-between items-center">
+              <button className="text-white bg-[#5272FF] hover:bg-cyan-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">Save</button>
+              <button onClick={() => setOpenModal(false)} className="text-white bg-[#EE0039] hover:bg-red-600 font-medium rounded-lg text-sm px-3 py-2.5 text-center" type="submit">
+                <Trash />
+              </button>
             </div>
           </div>
-        )}
-      </div>
-
-
-
-
-
+        </div>
+      )}
     </div>
   );
 };
