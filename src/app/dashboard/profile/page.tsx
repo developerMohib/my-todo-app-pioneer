@@ -32,7 +32,7 @@ export default function ProfileDashboard() {
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">Account Information</h1>
-                    <hr className='h-0.5 w-3/12 bg-blue-500' />
+                    <hr className='h-0.5 w-3/12 bg-[#5272FF]' />
                 </div>
 
                 <div className="bg-white rounded-xl overflow-hidden">
@@ -41,11 +41,11 @@ export default function ProfileDashboard() {
                             {/* Profile Photo Section */}
                             <div className="flex flex-col sm:flex-row items-center gap-1 rounded-xl border border-gray-200 w-1/2 justify-start">
                                 <div className="relative p-8">
-                                    <div className="w-24 h-24 rounded-full bg-gray-400 flex items-center justify-start">
+                                    <div className="w-24 h-24 rounded-full bg-[#9F9F9F] flex items-center justify-start">
                                     </div>
                                     <button
                                         type="button"
-                                        className="absolute bottom-8 right-9 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+                                        className="absolute bottom-8 right-9 bg-[#5272FF] text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
                                     >
                                         <Camera size={16} />
                                     </button>
@@ -54,7 +54,7 @@ export default function ProfileDashboard() {
                                 <div className="flex-1 text-center sm:text-left">
                                     <button
                                         type="button"
-                                        className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 transition-colors"
+                                        className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-white bg-[#5272FF] hover:bg-blue-600 transition-colors"
                                     >
                                         <Upload size={16} />
                                         Upload New Photo
@@ -67,7 +67,7 @@ export default function ProfileDashboard() {
                                 {/* Name Row */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                             First Name
                                         </label>
                                         <input
@@ -79,7 +79,7 @@ export default function ProfileDashboard() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                             Last Name
                                         </label>
                                         <input
@@ -94,7 +94,7 @@ export default function ProfileDashboard() {
 
                                 {/* Email */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                         Email
                                     </label>
                                     <input
@@ -109,7 +109,7 @@ export default function ProfileDashboard() {
                                 {/* Address & Contact Row */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                             Address
                                         </label>
                                         <input
@@ -121,7 +121,7 @@ export default function ProfileDashboard() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                             Contact Number
                                         </label>
                                         <input
@@ -136,7 +136,7 @@ export default function ProfileDashboard() {
 
                                 {/* Birthday */}
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                         Birthday
                                     </label>
                                     <input
@@ -152,13 +152,13 @@ export default function ProfileDashboard() {
                                 <div className="flex flex-col sm:flex-row gap-4 pt-6 w-2/3 mx-auto">
                                     <button
                                         type="submit"
-                                        className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                                        className="flex-1 bg-[#5272FF] text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
                                     >
                                         Save Changes
                                     </button>
                                     <button
                                         type="button"
-                                        className="flex-1 bg-gray-400 text-white py-3 px-6 rounded-lg font-semibold border border-gray-300 hover:bg-gray-600 transition-colors"
+                                        className="flex-1 bg-[#8CA3CD] text-white py-3 px-6 rounded-lg font-semibold border border-gray-300 hover:bg-[#9F9F9F] transition-colors"
                                     >
                                         Cancel
                                     </button>

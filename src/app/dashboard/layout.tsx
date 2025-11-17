@@ -64,7 +64,7 @@ function Sidebar() {
             alt={`${USER_DATA.name}'s avatar`}
             width={128}
             height={128}
-            className="w-32 h-32 rounded-full bg-gray-500 object-cover border-4 border-white/20"
+            className="w-32 h-32 rounded-full bg-gray-500 object-cover"
             priority
           />
           <div className="mt-4 space-y-1">
@@ -140,7 +140,7 @@ function Header({ currentDate }: { currentDate: Date }) {
         {/* ACTION BUTTONS */}
         <div className="flex items-center gap-4">
           <button 
-            className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="p-2 bg-[#5272FF] text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             aria-label="Notifications"
           >
             <Bell size={20} />
@@ -161,7 +161,7 @@ function Header({ currentDate }: { currentDate: Date }) {
             <p className="text-sm text-gray-600">
               {currentDate.toLocaleDateString("en-GB", {
                 day: "numeric",
-                month: "long",
+                month: "numeric",
                 year: "numeric"
               })}
             </p>
