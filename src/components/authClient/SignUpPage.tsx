@@ -1,10 +1,17 @@
+
 "use client";
 import { useState } from 'react';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
+import { signUpUser } from '@/services/AuthService';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const SignUpPage = () => {
     const [showPassword, setShowPassword] = useState(false);
+
+    const router = useRouter();
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -89,13 +96,144 @@ const SignUpPage = () => {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (validateForm()) {
-            // Form is valid, proceed with submission
-            console.log('Form submitted:', formData);
-        }
-    };
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     if (validateForm()) {
+
+    //         console.log(formData);
+
+    //         const res = await signUpUser(formData)
+    //         if (res?.success) {
+    //             toast.success(res?.message);
+    //             router.push("/signin");
+    //         } else {
+
+    //             // if (publicId) {
+    //             //     await deleteImageFromCloudinary(publicId);
+    //             // }
+    //             toast.error(res?.message);
+    //         }
+
+    //         // Form is valid, proceed with submission
+    //         console.log('Form submittedsss:', formData);
+    //     }
+    // };
+
+    //     const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+
+    //     if (validateForm()) {
+
+    //         // Convert Object → FormData
+    //         // const fd = new FormData();
+    //         // fd.append("first_name", formData.firstName);
+    //         // fd.append("last_name", formData.lastName);
+    //         // fd.append("email", formData.email);
+    //         // fd.append("password", formData.password);
+
+    //         // যদি confirmPassword দরকার না হয় backend-এ, পাঠাবে না
+    //         // fd.append("confirmPassword", formData.confirmPassword);
+
+    //         // console.log(fd);
+
+
+    //         // const res = await signUpUser(fd);
+    //         const res = await signUpUser({
+    //             first_name: formData?.firstName,
+    //             last_name: formData?.lastName,
+    //             email: formData?.email,
+    //             password: formData?.password
+    //         });
+
+    //         if (res?.success) {
+    //             toast.success(res?.message);
+    //             router.push("/signin");
+    //         } else {
+    //             toast.error(res?.message);
+    //         }
+
+    //         console.log("Final FormData Sent:", fd);
+    //     }
+    // };
+
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+
+    //     if (!validateForm()) return;
+
+    //     // Convert Object → FormData
+    //     const fd = new FormData();
+    //     fd.append("first_name", formData.firstName);
+    //     fd.append("last_name", formData.lastName);
+    //     fd.append("email", formData.email);
+    //     fd.append("password", formData.password);
+
+    //     // যদি confirmPassword backend-এ না লাগে, append করো না
+    //     // fd.append("confirmPassword", formData.confirmPassword);
+
+    //     console.log("FormData to send:", ...fd);
+
+    //     // Call signup function
+    //     const res = await signUpUser(fd);
+
+    //     if (res?.success) {
+    //         toast.success(res.message);
+    //         router.push("/signin");
+    //     } else {
+    //         toast.error(res.message);
+    //     }
+    // };
+
+//     const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+
+//     if (!validateForm()) return;
+
+//     // 🚀 Postman-এর মতো FormData তৈরি করো
+//     const fd = new FormData();
+//     fd.append("first_name", formData.firstName);  // SAME KEY NAME as POSTMAN
+//     fd.append("last_name", formData.lastName);
+//     fd.append("email", formData.email);
+//     fd.append("password", formData.password);
+
+//     console.log("Sending FormData:", [...fd.entries()]);
+
+//     // API Call
+//     const res = await signUpUser(fd);
+
+//     if (res?.success) {
+//         toast.success(res.message);
+//         router.push("/signin");
+//     } else {
+//         toast.error(res.message);
+//     }
+// };
+
+const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    const fd = new FormData();
+    fd.append("first_name", formData.firstName);
+    fd.append("last_name", formData.lastName);
+    fd.append("email", formData.email);
+    fd.append("password", formData.password);
+
+    const res = await signUpUser(fd);
+
+    console.log(res);
+    
+
+    if (res?.success) {
+        toast.success(res.message);
+        router.push("/signin");
+    } else {
+        toast.error(res.message);
+    }
+};
+
+
 
     return (
         <div className="min-h-screen grid grid-cols-7">
@@ -106,7 +244,7 @@ const SignUpPage = () => {
                     alt="Signup Illustration"
                     width={600}
                     height={600}
-                    className="object-contain relative z-0 opacity-80"
+                    className="object-cover relative z-0 opacity-80"
                     priority
                     loading="eager"
                 />
@@ -211,7 +349,7 @@ const SignUpPage = () => {
                                 : 'border-gray-300 focus:ring-blue-500'
                                 }`}
                         />
-                        
+
                         {errors.confirmPassword && (
                             <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
                         )}
@@ -219,18 +357,18 @@ const SignUpPage = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
+                        className="w-full bg-[#5272FF] hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
                     >
                         Sign Up
                     </button>
                 </form>
 
 
-                <p className="mt-6 text-center text-gray-600">
+                <p className="mt-6 text-center text-[#4B5563] text-sm">
                     Already have an account?{" "}
-                    <a href="/auth/signin" className="text-blue-600 hover:underline">
-                        Log in
-                    </a>
+                    <Link href="/signin" className="text-blue-600 hover:underline">
+                        Sign in
+                    </Link>
                 </p>
             </div>
         </div>

@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -18,10 +19,10 @@ const SignInPage = () => {
             {/* RIGHT SIDE FORM signup-banner-Photoroom.png*/}
             <div className="col-span-4 flex flex-col justify-center px-8 lg:px-20 py-10 w-4/5 mx-auto">
                 <div className='text-center'>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                    <h1 className="text-3xl font-bold text-[#0D224A] mb-2">
                     Log in to your account
                 </h1>
-                <p className="text-gray-600 mb-10">
+                <p className="text-[#4B5563] mb-10">
                     Start managing your tasks efficiently
                 </p>
                 </div>
@@ -32,7 +33,7 @@ const SignInPage = () => {
                         <input
                             type="email"
                             placeholder='Enter Your Email'
-                            className="border border-gray-300 w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            className="border border-gray-300 w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-[#8CA3CD]"
                         />
                     </div>
 
@@ -41,7 +42,7 @@ const SignInPage = () => {
                         <input
                             type="password"
                             placeholder='Enter Your Password'
-                            className="border border-gray-300 w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            className="border border-gray-300 w-full rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-[#8CA3CD]"
                         />
                     </div>
 
@@ -59,7 +60,7 @@ const SignInPage = () => {
                         </div>
 
                         <div className="text-sm">
-                            <Link href="#" className="text-blue-600 hover:text-blue-500">
+                            <Link href="#" className="text-[#5272FF] hover:text-blue-500">
                                 Forgot Your Password?
                             </Link>
                         </div>
@@ -67,17 +68,17 @@ const SignInPage = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
+                        className="w-full bg-[#5272FF] hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
                     >
                         Log In
                     </button>
                 </form>
 
-                <p className="mt-6 text-center text-gray-600">
-                    Already have an account?{" "}
-                    <a href="/auth/signup" className="text-blue-600 hover:underline">
+                <p className="mt-6 text-center text-[#4B5563] text-sm">
+                    Don&apos;t have an account?{" "}
+                    <Link href="/" className="text-blue-600 hover:underline">
                         Register Now
-                    </a>
+                    </Link>
                 </p>
             </div>
         </div>

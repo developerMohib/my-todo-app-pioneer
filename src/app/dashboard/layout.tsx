@@ -19,7 +19,7 @@ const NAVIGATION_ITEMS = [
 
 const USER_DATA = {
   name: "Leroy Jenkins",
-  role: "Full-stack developer",
+  email: "Full-stack@gmail.com",
   avatar: "https://avatars.githubusercontent.com/u/92154638?v=4"
 } as const;
 
@@ -64,12 +64,12 @@ function Sidebar() {
             alt={`${USER_DATA.name}'s avatar`}
             width={128}
             height={128}
-            className="w-32 h-32 rounded-full bg-gray-500 object-cover"
+            className="w-24 h-24 rounded-full object-cover border border-white"
             priority
           />
-          <div className="mt-4 space-y-1">
-            <h2 className="text-xl font-semibold text-white">{USER_DATA.name}</h2>
-            <p className="text-sm text-gray-300">{USER_DATA.role}</p>
+          <div className="mt-2 space-y-1">
+            <h2 className="text-base font-semibold text-white">{USER_DATA.name}</h2>
+            <p className="text-sm text-gray-300">{USER_DATA.email}</p>
           </div>
         </div>
 
@@ -104,8 +104,8 @@ function SidebarLink({ href, label, icon }: typeof NAVIGATION_ITEMS[number]) {
       href={href}
       className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 ${
         isActive
-          ? "bg-linear-to-r from-cyan-900 to-[#0D224A] text-white"
-          : "text-gray-200 hover:bg-linear-to-r from-cyan-900 to-[#0D224A] hover:text-white"
+          ? "bg-linear-to-r from-[#5272FF50] to-[#0D224A] text-white"
+          : "text-gray-200 hover:bg-linear-to-r from-[#5272FF50] to-[#0D224A] hover:text-white"
       }`}
     >
       {icon}
