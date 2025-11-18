@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-"use server"
+"use server";
+
+import app_axios from "@/lib/axios";
 
 // import { cookies } from "next/headers";
 
@@ -38,7 +40,7 @@
 
 //         const result = await res.json();
 //         console.log(result);
-        
+
 //         return result;
 
 //     } catch (error: any) {
@@ -82,7 +84,6 @@
 //   }
 // };
 
-
 // export const signUpUser = async (formData: FormData) => {
 //   try {
 //     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/users/signup`, {
@@ -119,7 +120,7 @@
 //     // 🛑 JSON না হলে HTML/text দেখিয়ে দাও
 //     const text = await res.text();
 //     console.log("HTML RESPONSE:", text);
-    
+
 //     return {
 //       success: false,
 //       message: "Backend returned HTML instead of JSON",
@@ -133,36 +134,75 @@
 //   }
 // };
 
+interface SignUpData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+}
 
-export const signUpUser = async (formData: FormData) => {
+// export const signUpUser = async (data: SignUpData) => {
+//   console.log("backend data ss:", data);
+//   try {
+//     const res = await fetch(
+//       `${process.env.NEXT_PUBLIC_BASE_API}/users/signup`,
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(data),
+//         // body: formData,
+//       }
+//     );
+
+//     const result = await res.json();
+
+//     // console.log("backend result",result);
+
+//     return result;
+//   } catch (error: any) {
+//     console.error("Fetch Error:", error);
+//     return { success: false, message: error.message };
+//   }
+// };
+
+// export const signUpUser = async (data: SignUpData) => {
+//   try {
+//     const res = await fetch(
+//       `${process.env.NEXT_PUBLIC_BASE_API}/users/signup`,
+//       {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(data),
+//       }
+//     );
+
+//     const text = await res.text(); // First get text
+//     try {
+//       const result = JSON.parse(text); // Then parse
+//       return result;
+//     } catch {
+//       console.error("Server did not return JSON:", text);
+//       return { success: false, message: "Server returned non-JSON response" };
+//     }
+//   } catch (error: any) {
+//     console.error("Fetch Error:", error);
+//     return { success: false, message: error.message };
+//   }
+// };
+
+export const signUpUser = async (data: SignUpData) => {
+
+    console.log(data);
+    
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_API}/users/signup`, {
-      method: "POST",
-      body: formData,
-    });
-
-    const type = res.headers.get("content-type") || "";
-
-    if (type.includes("application/json")) {
-      return await res.json();
-    }
-
-    const html = await res.text();
-    console.log("HTML Response:", html);
-
-    return {
-      success: false,
-      message: "Server returned HTML. API route URL is wrong.",
-      raw: html,
-    };
-
+    const res = await app_axios.post("/users/signup", data);
+    return res.data;
   } catch (error: any) {
-    console.error("Fetch Error:", error);
-    return { success: false, message: error.message };
+    console.error("Signup failed:", error);
+    const message = error?.response?.data?.message || "Something went wrong during sign up!";
+    throw new Error(message);
   }
+
 };
-
-
-
-
-

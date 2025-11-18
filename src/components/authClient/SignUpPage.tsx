@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 "use client";
 import { useState } from 'react';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
-import { signUpUser } from '@/services/AuthService';
-import { toast } from 'sonner';
+// import { signUpUser } from '@/services/AuthService';
+// import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
 const SignUpPage = () => {
@@ -184,61 +185,125 @@ const SignUpPage = () => {
     //     }
     // };
 
-//     const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
+    //     const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
 
-//     if (!validateForm()) return;
+    //     if (!validateForm()) return;
 
-//     // 🚀 Postman-এর মতো FormData তৈরি করো
-//     const fd = new FormData();
-//     fd.append("first_name", formData.firstName);  // SAME KEY NAME as POSTMAN
-//     fd.append("last_name", formData.lastName);
-//     fd.append("email", formData.email);
-//     fd.append("password", formData.password);
+    //     // 🚀 Postman-এর মতো FormData তৈরি করো
+    //     const fd = new FormData();
+    //     fd.append("first_name", formData.firstName);  // SAME KEY NAME as POSTMAN
+    //     fd.append("last_name", formData.lastName);
+    //     fd.append("email", formData.email);
+    //     fd.append("password", formData.password);
 
-//     console.log("Sending FormData:", [...fd.entries()]);
+    //     console.log("Sending FormData:", [...fd.entries()]);
 
-//     // API Call
-//     const res = await signUpUser(fd);
+    //     // API Call
+    //     const res = await signUpUser(fd);
 
-//     if (res?.success) {
-//         toast.success(res.message);
-//         router.push("/signin");
-//     } else {
-//         toast.error(res.message);
-//     }
-// };
+    //     if (res?.success) {
+    //         toast.success(res.message);
+    //         router.push("/signin");
+    //     } else {
+    //         toast.error(res.message);
+    //     }
+    // };
 
-const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
 
-    if (!validateForm()) return;
+    //     if (!validateForm()) return;
 
-    const fd = new FormData();
-    fd.append("first_name", formData.firstName);
-    fd.append("last_name", formData.lastName);
-    fd.append("email", formData.email);
-    fd.append("password", formData.password);
+    //     // const fd = new FormData();
+    //     // fd.append("first_name", formData.firstName);
+    //     // fd.append("last_name", formData.lastName);
+    //     // fd.append("email", formData.email);
+    //     // fd.append("password", formData.password);
 
-    const res = await signUpUser(fd);
+    //     const res = await signUpUser(formData);
 
-    console.log(res);
-    
+    //     console.log(res);
 
-    if (res?.success) {
-        toast.success(res.message);
-        router.push("/signin");
-    } else {
-        toast.error(res.message);
-    }
-};
 
+    //     if (res?.success) {
+    //         toast.success(res.message);
+    //         router.push("/signin");
+    //     } else {
+    //         toast.error(res.message);
+    //     }
+    // };
+
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+
+    //     if (!validateForm()) return;
+
+    //     try {
+
+    //         const data = {
+    //             first_name: formData.firstName,
+    //             last_name: formData.lastName,
+    //             email: formData.email,
+    //             password: formData.password
+    //         };
+
+    //         console.log(data);
+
+
+    //         const res = await signUpUser(data);
+    //         console.log("Response:", res);
+
+    //         if (res?.success) {
+    //             toast.success(res.message);
+    //             router.push("/signin");
+    //         } else {
+    //             toast.error(res.message);
+    //         }
+    //     } catch (error: any) {
+    //         console.error("Submission error:", error);
+    //         toast.error("Signup failed: " + error.message);
+    //     }
+    // };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!validateForm()) return;
+
+        console.log(formData);
+        
+
+        // try {
+        //     const data = {
+        //         first_name: formData.firstName,
+        //         last_name: formData.lastName,
+        //         email: formData.email,
+        //         password: formData.password
+        //     };
+
+        //     console.log("Final Data Sent:", data);
+
+        //     const res = await signUpUser(data);
+        //     console.log("Response:", res);
+
+        //     if (res?.success) {
+        //         toast.success(res.message);
+        //         router.push("/signin");
+        //     } else {
+        //         toast.error(res.message);
+        //     }
+        // } catch (error: any) {
+        //     console.error("Submission error:", error);
+        //     toast.error("Signup failed: " + error.message);
+        // }
+    };
 
 
     return (
-        <div className="min-h-screen grid grid-cols-7">
+        <div className="min-h-screen md:grid grid-cols-7">
             {/* LEFT SIDE IMAGE */}
-            <div className="col-span-3 lg:flex items-center justify-center bg-[#E2ECF8] p-6">
+            <div className="col-span-3 lg:flex items-center justify-center bg-[#E2ECF8] md:p-6 md:block hidden ">
                 <Image
                     src="/signup-banner-Photoroom.png"
                     alt="Signup Illustration"

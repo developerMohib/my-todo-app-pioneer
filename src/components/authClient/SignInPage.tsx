@@ -4,20 +4,22 @@ import Link from 'next/link';
 
 const SignInPage = () => {
     return (
-        <div className="min-h-screen grid grid-cols-7">
+        <div className="min-h-screen md:grid grid-cols-7 md:gap-4 gap-0">
             {/* LEFT SIDE IMAGE */}
-            <div className="col-span-3 lg:flex items-center justify-center bg-[#E2ECF8] p-6">
+            <div className="col-span-3 lg:flex items-center justify-center bg-[#E2ECF8] md:block hidden">
                 <Image
                     src="/signin-page-banner-Photoroom.png"
                     alt="Signup Illustration"
                     width={600}
                     height={600}
-                    className="object-contain relative z-0 opacity-80"
+                    className="object-cover relative z-0 opacity-80"
+                    priority
+                    loading="eager"
                 />
             </div>
 
             {/* RIGHT SIDE FORM signup-banner-Photoroom.png*/}
-            <div className="col-span-4 flex flex-col justify-center px-8 lg:px-20 py-10 w-4/5 mx-auto">
+            <div className="col-span-4 flex flex-col justify-center px-8 lg:px-20 py-10 items-center mx-auto h-screen">
                 <div className='text-center'>
                     <h1 className="text-3xl font-bold text-[#0D224A] mb-2">
                     Log in to your account
