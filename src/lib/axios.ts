@@ -1,4 +1,3 @@
-
 "use server"
 import axios from "axios";
 import { cookies } from "next/headers";
@@ -23,3 +22,15 @@ app_axios.interceptors.request.use(
 );
 
 export default app_axios;
+// @/lib/axios.ts
+// import axios from "axios";
+
+// const app_axios = axios.create({
+//   baseURL: process.env.NEXT_PUBLIC_API_URL,
+//   timeout: 10000,
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
+
+// export default app_axios;

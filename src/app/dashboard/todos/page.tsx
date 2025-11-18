@@ -1,5 +1,5 @@
 "use client"
-import { ArrowDownUp, PenLine, Search, Trash, Trash2 } from "lucide-react";
+import { ArrowDownUp, PenLine, Search, Trash, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -113,6 +113,7 @@ const TodoPage = () => {
       tags: ["personal", "organization"]
     }
   ];
+
   const [openFilter, setOpenFilter] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [filters, setFilters] = useState({
@@ -122,15 +123,13 @@ const TodoPage = () => {
     expiresIn30: false
   });
 
-
-
   const handleTodoEdit = async (id: string) => {
     console.log('edit todo', id)
   }
+
   const handleTodoDelete = async (id: string) => {
     console.log('delete todo', id)
   }
-
 
   const handleFilterChange = (filterName: keyof typeof filters) => {
     setFilters(prev => ({
@@ -138,6 +137,7 @@ const TodoPage = () => {
       [filterName]: !prev[filterName]
     }));
   };
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -151,48 +151,67 @@ const TodoPage = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
   if (initialTodos.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center mt-10 bg-red-600 rounded-lg min-h-screen">
-        <Image src={"/icon-no-projects.png"} alt="No Todos Yet" width={400} height={400} className="h-40 w-auto" />
-        <p>No Todo Yet</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] bg-red-600 rounded-lg">
+        <Image 
+          src={"/icon-no-projects.png"} 
+          alt="No Todos Yet" 
+          width={400} 
+          height={400} 
+          className="h-32 w-auto md:h-40" 
+        />
+        <p className="text-white text-lg mt-4">No Todo Yet</p>
       </div>
     )
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-slate-900">Todos</h1>
-
-        <button onClick={() => setOpenModal(true)}
-          type="button" className="bg-blue-500 px-3 py-2 rounded-lg text-white">+ New Task</button>
+    <div className="p-4 md:p-6">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Todos</h1>
+        <button 
+          onClick={() => setOpenModal(true)}
+          type="button" 
+          className="bg-blue-500 px-4 py-2 md:px-6 md:py-3 rounded-lg text-white text-sm md:text-base hover:bg-blue-600 transition-colors w-full sm:w-auto"
+        >
+          + New Task
+        </button>
       </div>
 
-      <div className="flex justify-between items-center mt-6">
-        <div className="w-10/12 bg-white">
-          <div className="relative rounded-lg w-full flex border-2 border-gray-300 ">
-            <input type="text" name="q" id="query" placeholder="Search Your Task Here..." className="w-full p-2 placeholder-[#4B5563] focus:outline-none" />
-            <button className="inline-flex items-center gap-2 bg-[#5272FF] text-white text-lg font-bold px-3 rounded-md">
-              <Search size={28} className="font-bold" />
+      {/* Search and Filter Section */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+        {/* Search Bar */}
+        <div className="w-full lg:w-10/12 bg-white">
+          <div className="relative rounded-lg w-full flex border-2 border-gray-300">
+            <input 
+              type="text" 
+              name="q" 
+              id="query" 
+              placeholder="Search Your Task Here..." 
+              className="w-full p-2 md:p-3 placeholder-[#4B5563] focus:outline-none text-sm md:text-base" 
+            />
+            <button className="inline-flex items-center gap-2 bg-[#5272FF] text-white px-3 md:px-4 rounded-md hover:bg-blue-600 transition-colors">
+              <Search size={20} className="md:w-6 md:h-6" />
+              <span className="hidden sm:inline text-sm md:text-base">Search</span>
             </button>
           </div>
         </div>
 
-        <div ref={dropdownRef} className="relative inline-block">
+        {/* Filter Dropdown */}
+        <div ref={dropdownRef} className="relative w-full lg:w-auto">
           <button
             onClick={() => setOpenFilter(!openFilter)}
-            className="bg-blue-500 px-4 py-2 rounded-lg text-white flex items-center gap-2 hover:bg-blue-600 transition-colors"
+            className="bg-blue-500 px-4 py-3  rounded-lg text-white flex items-center justify-center gap-1.5 hover:bg-blue-600 transition-colors w-full lg:w-auto text-sm md:text-base "
           >
             Filter By
-            <ArrowDownUp size={16} />
+            <ArrowDownUp size={16} className="md:w-5 md:h-5" />
           </button>
 
           {openFilter && (
-            <div className="absolute mt-2 right-0 bg-white w-64 rounded-lg shadow-lg p-4 border border-gray-200 z-50">
+            <div className="absolute mt-2 left-0 lg:left-auto lg:right-0 bg-white w-full lg:w-64 rounded-lg shadow-lg p-4 border border-gray-200 z-50">
               <h3 className="text-sm font-semibold text-gray-900 mb-3">Date</h3>
-
               <div className="space-y-2">
                 {[
                   { key: 'deadlineToday', label: 'Deadline Today' },
@@ -216,47 +235,67 @@ const TodoPage = () => {
             </div>
           )}
         </div>
-
       </div>
 
-      <h1 className="mt-10 mb-3 font-semibold">Your Task</h1>
+      {/* Tasks Section */}
+      <h1 className="mt-6 md:mt-10 mb-3 md:mb-4 font-semibold text-lg md:text-xl">Your Task</h1>
       <div className="bg-white rounded-lg">
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
           {initialTodos && initialTodos.map((task) => (
             <div
               key={task.id}
-              className="p-5 rounded-xl bg-white shadow-sm border border-gray-100 hover:shadow-md transition"
+              className="p-4 md:p-5 rounded-xl bg-white shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200"
             >
-              <div className="flex items-start justify-between">
-                <h2 className="text-lg font-semibold text-gray-900">
+              <div className="flex items-start justify-between mb-2">
+                <h2 className="text-base md:text-lg font-semibold text-gray-900 line-clamp-2 flex-1 mr-2">
                   {task.title}
                 </h2>
-
-                {/* Priority Badge */}
-                <div className="flex items-center gap-3"><span className={`px-2 py-1 rounded-lg text-xs font-medium ${task.priority === 'high' ? 'text-red-600 bg-[#FEE2E2]' :
-                  task.priority === 'medium' ? 'bg-green-100 text-green-800' :
+                <div className="flex items-center gap-2">
+                  <span className={`px-2 py-1 rounded-lg text-xs font-medium ${
+                    task.priority === 'high' ? 'text-red-600 bg-[#FEE2E2]' :
+                    task.priority === 'medium' ? 'bg-green-100 text-green-800' :
                     'bg-yellow-100 text-yellow-800'
                   }`}>
-                  {task.priority}
-                </span> <Image className="h-3 w-auto" src={"/grid4.png"} alt="Grid" width={40} height={40} /> </div>
+                    {task.priority}
+                  </span>
+                  <Image 
+                    className="h-3 w-auto hidden sm:block" 
+                    src={"/grid4.png"} 
+                    alt="Grid" 
+                    width={40} 
+                    height={40} 
+                  />
+                </div>
               </div>
-              <p className="text-sm text-gray-600 mt-2">{task.description}</p>
+              
+              <p className="text-xs md:text-sm text-gray-600 line-clamp-2 mb-3">
+                {task.description}
+              </p>
 
               {/* Action Icons */}
-              <div className="flex items-center justify-between gap-3 mt-4">
-                <div > {task.dueDate && (
-                  <p className="text-xs text-gray-500">
-                    Due: {task.dueDate.toLocaleDateString()}
-                  </p>
-                )} </div>
-                <div className="flex items-center gap-3">
-                  <button onClick={() => handleTodoEdit(task.id)} className="p-2 rounded-md bg-blue-50 hover:bg-blue-100 transition">
-                    <PenLine size={16} className="text-blue-600" />
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex-1">
+                  {task.dueDate && (
+                    <p className="text-xs text-gray-500">
+                      Due: {task.dueDate.toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={() => handleTodoEdit(task.id)} 
+                    className="p-1.5 md:p-2 rounded-md bg-blue-50 hover:bg-blue-100 transition-colors"
+                    aria-label="Edit task"
+                  >
+                    <PenLine size={14} className="md:w-4 md:h-4 text-blue-600" />
                   </button>
 
-                  <button onClick={() => handleTodoDelete(task.id)} className="p-2 rounded-md bg-red-50 hover:bg-red-100 transition">
-                    <Trash2 size={16} className="text-red-600" />
+                  <button 
+                    onClick={() => handleTodoDelete(task.id)} 
+                    className="p-1.5 md:p-2 rounded-md bg-red-50 hover:bg-red-100 transition-colors"
+                    aria-label="Delete task"
+                  >
+                    <Trash2 size={14} className="md:w-4 md:h-4 text-red-600" />
                   </button>
                 </div>
               </div>
@@ -267,74 +306,128 @@ const TodoPage = () => {
 
       {/* Modal */}
       {openModal && (
-        <div
-          className="fixed inset-0 z-50 w-1/2 mx-auto justify-center"
-          role="dialog"
-          aria-modal="true"
-        >
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Overlay */}
           <div
-            onClick={() => setOpenModal(!openModal)}
+            onClick={() => setOpenModal(false)}
             className="fixed inset-0 bg-black/70 transition-opacity"
           />
-          <div className="bg-white rounded-lg relative">
-            <div className="flex items-start justify-between p-5 pb-3">
-              <h3 className="text-xl font-semibold">
+          
+          {/* Modal Content */}
+          <div className="bg-white rounded-lg relative w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-start justify-between p-4 md:p-5 pb-3 border-b">
+              <h3 className="text-lg md:text-xl font-semibold">
                 Add New Task
               </h3>
-              <button onClick={() => setOpenModal(false)} type="button" className="text-[#000000] bg-transparent hover:text-gray-900 rounded-lg text-sm ml-auto inline-flex items-center underline" data-modal-toggle="product-modal">
-                Go Back
+              <button 
+                onClick={() => setOpenModal(false)} 
+                type="button" 
+                className="text-gray-500 hover:text-gray-700 rounded-lg text-sm p-1.5"
+                aria-label="Close modal"
+              >
+                <X size={20} />
               </button>
             </div>
-            <div className="px-5 space-y-6">
+
+            {/* Modal Body */}
+            <div className="p-4 md:p-5 space-y-4 md:space-y-6">
               <form action="#">
-                <div className="">
-                  <label htmlFor="product-name" className="text-sm font-medium text-[#0C0C0C] block mb-2">Title</label>
-                  <input type="text" name="product-name" id="product-name" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required />
+                <div>
+                  <label htmlFor="product-name" className="text-sm font-medium text-[#0C0C0C] block mb-2">
+                    Title
+                  </label>
+                  <input 
+                    type="text" 
+                    name="product-name" 
+                    id="product-name" 
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" 
+                    required 
+                  />
                 </div>
-                <div className="my-5">
-                  <label htmlFor="brand" className="text-sm font-medium text-gray-900 block mb-2">Date</label>
-                  <input type="text" name="brand" id="brand" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required />
+                
+                <div className="mt-4">
+                  <label htmlFor="brand" className="text-sm font-medium text-gray-900 block mb-2">
+                    Date
+                  </label>
+                  <input 
+                    type="date" 
+                    name="brand" 
+                    id="brand" 
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" 
+                    required 
+                  />
                 </div>
 
-                <div className="my-5">
-                  <p>Priority</p>
-
-                  <div className="grid grid-cols-3 my-2">
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-red-500 rounded-full mr-1"></span>
-                      <label htmlFor="terms" className="mr-2 block text-sm text-[#4B5563]">
-                        Extreme
-                      </label>
-                      <input id="priority-extreme" name="terms" type="checkbox" required className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded" />
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
-                      <label htmlFor="terms" className="mr-2 block text-sm text-[#4B5563]">
-                        Modarate
-                      </label>
-                      <input id="priority-modarate" name="terms" type="checkbox" required className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded" />
-                    </div>
-                    <div className="flex items-center">
-                      <span className="w-2 h-2 bg-yellow-500 rounded-full mr-1"></span>
-                      <label htmlFor="terms" className="mr-2 block text-sm text-[#4B5563]">
-                        Low
-                      </label>
-                      <input id="priority-low" name="terms" type="checkbox" required className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded" />
-                    </div>
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-900 mb-3">Priority</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-50">
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                      <span className="text-sm text-gray-700">Extreme</span>
+                      <input 
+                        id="priority-extreme" 
+                        name="priority" 
+                        type="radio" 
+                        required 
+                        className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded ml-auto" 
+                      />
+                    </label>
+                    <label className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-50">
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      <span className="text-sm text-gray-700">Moderate</span>
+                      <input 
+                        id="priority-moderate" 
+                        name="priority" 
+                        type="radio" 
+                        required 
+                        className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded ml-auto" 
+                      />
+                    </label>
+                    <label className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-50">
+                      <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                      <span className="text-sm text-gray-700">Low</span>
+                      <input 
+                        id="priority-low" 
+                        name="priority" 
+                        type="radio" 
+                        required 
+                        className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded ml-auto" 
+                      />
+                    </label>
                   </div>
                 </div>
 
-                <div className="col-span-full ">
-                  <label htmlFor="product-details" className="text-sm font-medium text-gray-900 block mb-2">Task Description</label>
-                  <textarea id="product-details" rows={6} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-4" placeholder="Start writtin here..." defaultValue={""} />
+                <div className="mt-4">
+                  <label htmlFor="product-details" className="text-sm font-medium text-gray-900 block mb-2">
+                    Task Description
+                  </label>
+                  <textarea 
+                    id="product-details" 
+                    rows={4} 
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-3" 
+                    placeholder="Start writing here..." 
+                    defaultValue={""} 
+                  />
                 </div>
               </form>
             </div>
-            <div className="p-6 border-t border-gray-200 rounded-b flex justify-between items-center">
-              <button className="text-white bg-[#5272FF] hover:bg-cyan-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">Save</button>
-              <button onClick={() => setOpenModal(false)} className="text-white bg-[#EE0039] hover:bg-red-600 font-medium rounded-lg text-sm px-3 py-2.5 text-center" type="submit">
-                <Trash />
+
+            {/* Modal Footer */}
+            <div className="p-4 md:p-5 border-t border-gray-200 rounded-b flex flex-col sm:flex-row justify-between items-center gap-3">
+              <button 
+                className="text-white bg-[#5272FF] hover:bg-cyan-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full sm:w-auto transition-colors"
+                type="submit"
+              >
+                Save Task
+              </button>
+              <button 
+                onClick={() => setOpenModal(false)} 
+                className="text-white bg-[#EE0039] hover:bg-red-600 font-medium rounded-lg text-sm px-4 py-2.5 text-center flex items-center gap-2 w-full sm:w-auto justify-center transition-colors"
+                type="button"
+              >
+                <Trash size={16} />
+                Cancel
               </button>
             </div>
           </div>
