@@ -96,36 +96,6 @@ const SignUpPage = () => {
         }
     };
 
-    // const handleSubmit = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     if (!validateForm()) return;
-    //     const data = {
-    //         first_name: formData.firstName,
-    //         last_name: formData.lastName,
-    //         email: formData.email,
-    //         password: formData.password
-    //     };
-
-    //     try {
-    //         setLoading(true);
-    //         const result = await signUpUser(data);
-    //         console.log('result', result)
-    //         if (result.success) {
-    //             toast.success(result.message)
-    //             router.push("/signin");
-    //         } else {
-    //             toast.error(result.message)
-    //             // Handle error
-    //         }
-    //     } catch (error) {
-    //         console.log('error', error)
-    //         toast.error('Server internal error')
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
@@ -289,7 +259,7 @@ const SignUpPage = () => {
                 <p className="mt-6 text-center text-[#4B5563] text-sm">
                     Already have an account?{" "}
                     <Link href="/" className="text-blue-600 hover:underline">
-                        Sign in
+                   Log in
                     </Link>
                 </p>
             </div>

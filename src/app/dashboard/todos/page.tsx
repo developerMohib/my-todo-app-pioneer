@@ -44,7 +44,7 @@ const TodoPage = () => {
   const [todos, setTodos] = useState<IBackendTodo[] | []>([]);
   const [loading, setLoading] = useState(true);
   const [errorr, setErrorr] = useState("");
-  console.log(' toset toodo', todos)
+  console.log(' to set toodo', todos)
 
   // Sensors for different input methods
   const sensors = useSensors(
@@ -160,21 +160,6 @@ const TodoPage = () => {
 
   console.log('all todoooooooos', todos);
 
-  if (todos?.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white h-screen rounded-lg">
-        <Image
-          src={"/icon-no-projects.png"}
-          alt="No Todos Yet"
-          width={400}
-          height={400}
-          className="h-32 w-auto md:h-40"
-        />
-        <p className="text-white text-lg mt-4">No Todo Yet</p>
-      </div>
-    )
-  }
-
   return (
     <div className="p-4 md:p-6">
       {/* Header Section */}
@@ -259,7 +244,7 @@ const TodoPage = () => {
           onDragEnd={handleDragEnd}
           onDragCancel={handleDragCancel}
         >
-          {todos && (<SortableContext items={todos?.map(todo => todo.id)} strategy={verticalListSortingStrategy}>
+          {/* {todos && (<SortableContext items={todos?.map(todo => todo.id)} strategy={verticalListSortingStrategy}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
               {todos?.map((task) => (
                 <DragDropItem
@@ -271,7 +256,39 @@ const TodoPage = () => {
               ))}
             </div>
           </SortableContext>
-          )}
+          )} */}
+
+
+{todos.length > 0 ? (
+  // 👉 Todos Component
+  <SortableContext items={todos.map(todo => todo.id)} strategy={verticalListSortingStrategy}>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+      {todos.map((task) => (
+        <DragDropItem
+          key={task.id}
+          task={task}
+          onEdit={handleTodoEdit}
+          onDelete={handleTodoDelete}
+        />
+      ))}
+    </div>
+  </SortableContext>
+) : (
+  // 👉 No Todo Image
+  <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white rounded-lg">
+    <Image
+      src="/icon-no-projects.png"
+      alt="No Todos Yet"
+      width={400}
+      height={400}
+      className="h-32 w-auto md:h-40"
+    />
+    <p className="text-gray-600 text-lg mt-4">No Todo Yet</p>
+  </div>
+)}
+
+
+
           <DragOverlay>
             {activeTodo ? (
               <div className="p-4 md:p-5 rounded-xl bg-white shadow-lg border-2 border-blue-500 opacity-90">

@@ -50,9 +50,8 @@ const USER_DATA = {
 
 export function Sidebar({ onClose }: SidebarProps) {
     const [loading, setLoading] = useState(false);
-    const [user, setUser] = useState<UserProfile | null>(null)
     const router = useRouter();
-
+    const [user, setUser] = useState<UserProfile | null>(null)
     const [error, setError] = useState("");
 
     useEffect(() => {

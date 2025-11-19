@@ -1,8 +1,13 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Camera, Upload } from 'lucide-react';
+import { getCurrentUser, UserProfile } from '@/services/AuthService/currentUser';
+import Loader from '@/components/shared/Loader';
 
 export default function ProfileDashboard() {
+    const [user, setUser] = useState<UserProfile | null>(null)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState("");
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -25,6 +30,32 @@ export default function ProfileDashboard() {
         // Handle form submission
         console.log('Profile updated:', formData);
     };
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            console.log("Selected file:", file);
+        }
+    };
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            setLoading(true);
+            const res = await getCurrentUser();
+            if (res.success && res.data) {
+                setUser(res?.data);
+            } else {
+                setError(res.message || "Failed to fetch user");
+            }
+            setLoading(false);
+        };
+
+        fetchUser();
+    }, []);
+
+
+    if (loading) return <Loader />
+
+    if (error) return <p className="text-red-600">{error}</p>;
 
     return (
         <div className="min-h-screen bg-white">
@@ -45,21 +76,30 @@ export default function ProfileDashboard() {
                                     </div>
                                     <button
                                         type="button"
-                                        className="absolute -bottom-1 -right-1 sm:bottom-2 sm:right-2 bg-[#5272FF] text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+                                        className="absolute bottom-1 -right-1 sm:bottom-2 bg-[#5272FF] text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
                                     >
                                         <Camera size={14} className="sm:size-4" />
                                     </button>
                                 </div>
 
                                 <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
-                                    <button
-                                        type="button"
-                                        className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-white bg-[#5272FF] hover:bg-blue-600 transition-colors w-full sm:w-auto"
+                                    <label
+                                        htmlFor="photoUpload"
+                                        className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-white bg-[#5272FF] hover:bg-blue-600 transition-colors w-full sm:w-auto cursor-pointer"
                                     >
                                         <Upload size={16} />
                                         Upload New Photo
-                                    </button>
+                                    </label>
+
+                                    <input
+                                        id="photoUpload"
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={handleFileChange}
+                                    />
                                 </div>
+
                             </div>
 
                             {/* Form Fields */}
@@ -73,7 +113,7 @@ export default function ProfileDashboard() {
                                         <input
                                             type="text"
                                             name="firstName"
-                                            value={formData.firstName}
+                                            value={formData.firstName || user?.first_name}
                                             onChange={handleChange}
                                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                         />
@@ -85,7 +125,7 @@ export default function ProfileDashboard() {
                                         <input
                                             type="text"
                                             name="lastName"
-                                            value={formData.lastName}
+                                            value={formData.lastName || user?.last_name}
                                             onChange={handleChange}
                                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                         />
@@ -100,7 +140,7 @@ export default function ProfileDashboard() {
                                     <input
                                         type="email"
                                         name="email"
-                                        value={formData.email}
+                                        value={formData.email || user?.email} readOnly disabled
                                         onChange={handleChange}
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                     />
@@ -115,7 +155,7 @@ export default function ProfileDashboard() {
                                         <input
                                             type="text"
                                             name="address"
-                                            value={formData.address}
+                                            value={formData.address || user?.address}
                                             onChange={handleChange}
                                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                         />
@@ -127,7 +167,7 @@ export default function ProfileDashboard() {
                                         <input
                                             type="tel"
                                             name="contactNumber"
-                                            value={formData.contactNumber}
+                                            value={formData.contactNumber || user?.contact_number}
                                             onChange={handleChange}
                                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                         />
@@ -142,7 +182,7 @@ export default function ProfileDashboard() {
                                     <input
                                         type="date"
                                         name="birthday"
-                                        value={formData.birthday}
+                                        value={formData.birthday || user?.birthday || ""}
                                         onChange={handleChange}
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                     />
