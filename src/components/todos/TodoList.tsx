@@ -20,14 +20,23 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { DragDropItem, IBackendTodo } from "@/components/dragdrop/DragDrop";
+import Swal from "sweetalert2";
+import { toast } from "sonner";
+import axios from "axios";
+import { UseQueryResult } from "@tanstack/react-query";
+import EditTodoModal from "./EditTodoModal";
 
 interface TodoListProps {
   todos: IBackendTodo[];
+  refetch: UseQueryResult<IBackendTodo[], Error>['refetch'];
 }
 
-const TodoList = ({ todos }: TodoListProps) => {
+const TodoList = ({ todos, refetch }: TodoListProps) => {
+
   const [activeId, setActiveId] = useState<string | null>(null);
   const [localTodos, setLocalTodos] = useState<IBackendTodo[]>(todos);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedTodo, setSelectedTodo] = useState<IBackendTodo | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -35,6 +44,64 @@ const TodoList = ({ todos }: TodoListProps) => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+
+  // Open edit modal
+  const handleTodoEdit = async (id: string) => {
+    const todo = localTodos.find(t => t.id === id);
+    if (todo) {
+      setSelectedTodo(todo);
+      setEditModalOpen(true);
+    }
+  };
+
+  // Delete todo function
+  const handleTodoDelete = async (id: string) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#5272FF",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const accessToken = localStorage.getItem("accessToken");
+          if (!accessToken) {
+            toast.error("No access token found");
+            return;
+          }
+
+          // Make DELETE request to your API
+          await axios.delete(`${process.env.NEXT_PUBLIC_BASE_API}/todos/${id}/`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          // Remove from local state immediately for better UX
+          setLocalTodos(prev => prev.filter(todo => todo.id !== id));
+
+          // Refetch to sync with server
+          await refetch();
+
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your task has been deleted.",
+            icon: "success"
+          });
+        } catch (error) {
+          console.error("Error deleting todo:", error);
+          toast.error("Failed to delete task. Please try again.");
+
+          // If error, refetch to get correct state from server
+          await refetch();
+        }
+      }
+    });
+  };
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -58,15 +125,6 @@ const TodoList = ({ todos }: TodoListProps) => {
 
   const handleDragCancel = () => {
     setActiveId(null);
-  };
-
-  const handleTodoEdit = async (id: string) => {
-    console.log('edit todo', id);
-  };
-
-  const handleTodoDelete = async (id: string) => {
-    // Your delete logic here
-    setLocalTodos(prev => prev.filter(todo => todo.id !== id));
   };
 
   const activeTodo = activeId ? localTodos.find(todo => todo.id === activeId) : null;
@@ -148,6 +206,12 @@ const TodoList = ({ todos }: TodoListProps) => {
           </DragOverlay>
         </DndContext>
       </div>
+      <EditTodoModal
+        openModal={editModalOpen}
+        setOpenModal={setEditModalOpen}
+        refetch={refetch}
+        todo={selectedTodo}
+      />
     </>
   );
 };

@@ -27,7 +27,6 @@ export const getAllTodos = async (): Promise<{ success: boolean; data?: IBackend
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log('response.data',response.data)
     return { success: true, data: response?.data };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

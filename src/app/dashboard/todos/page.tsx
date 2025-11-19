@@ -40,7 +40,7 @@ const TodoPage = () => {
         setFilters={setFilters}
       />
 
-      <TodoList todos={todos} />
+      <TodoList todos={todos} refetch={refetch} />
 
       <CreateTodoModal
         openModal={openModal}

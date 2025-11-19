@@ -76,10 +76,9 @@ export default function ProfileDashboard() {
                 window.location.reload()
                 
             }
-            console.log('upadate', res)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
-            console.log("Update error:", error);
+            console.log(error);
             toast.error("Failed to update profile!");
         } finally {
             setLoading(false)
