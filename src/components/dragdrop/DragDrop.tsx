@@ -44,7 +44,7 @@ export function DragDropItem({ task, onEdit, onDelete }: SortableTodoItemProps) 
     transition,
     isDragging,
   } = useSortable({ id: task.id });
-  console.log('task ', task)
+  
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
