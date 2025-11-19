@@ -1,14 +1,18 @@
 "use client"
-import { logoutUser } from "@/services/AuthService";
+
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Home, User, List, LogOut, X } from "lucide-react";
+import { logoutUser } from "@/services/AuthService/logout";
+
+import Loader from "./Loader";
+import { getCurrentUser, UserProfile } from "@/services/AuthService/currentUser";
 
 interface SidebarProps {
-  onClose?: () => void;
+    onClose?: () => void;
 }
 
 function SidebarLink({ href, label, icon }: typeof NAVIGATION_ITEMS[number]) {
@@ -44,11 +48,33 @@ const USER_DATA = {
 } as const;
 
 
-
-
 export function Sidebar({ onClose }: SidebarProps) {
     const [loading, setLoading] = useState(false);
+    const [user, setUser] = useState<UserProfile | null>(null)
     const router = useRouter();
+
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            setLoading(true);
+            const res = await getCurrentUser();
+            if (res.success && res.data) {
+                setUser(res?.data);
+            } else {
+                setError(res.message || "Failed to fetch user");
+            }
+            setLoading(false);
+        };
+
+        fetchUser();
+    }, []);
+
+
+    if (loading) return <Loader />
+
+    if (error) return <p className="text-red-600">{error}</p>;
+
 
     const handleLogout = async () => {
         setLoading(true);
@@ -58,7 +84,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
             if (result.success) {
                 toast.success(result.message);
-                router.push('/signin');
+                router.push('/');
             } else {
                 toast.error(result.message);
             }
@@ -74,7 +100,7 @@ export function Sidebar({ onClose }: SidebarProps) {
         <aside className="w-64 bg-[#0D224A] text-white flex flex-col min-h-screen">
             {/* Close Button - Only visible on mobile when onClose prop is provided */}
             {onClose && (
-                <button 
+                <button
                     onClick={onClose}
                     className="lg:hidden absolute top-4 right-4 p-2 text-white hover:bg-white/10 rounded-lg transition-colors z-10"
                     aria-label="Close sidebar"
@@ -95,8 +121,8 @@ export function Sidebar({ onClose }: SidebarProps) {
                         priority
                     />
                     <div className="mt-2 space-y-1">
-                        <h2 className="text-base font-semibold text-white">{USER_DATA.name}</h2>
-                        <p className="text-sm text-gray-300">{USER_DATA.email}</p>
+                        <h2 className="text-base font-semibold text-white">{user?.first_name} {user?.last_name} </h2>
+                        <p className="text-sm text-gray-300">{user?.email}</p>
                     </div>
                 </div>
 

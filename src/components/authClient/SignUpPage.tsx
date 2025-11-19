@@ -6,7 +6,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { signUpUser } from '@/services/AuthService';
+import { signupUser } from '@/services/AuthService/signup';
 
 const SignUpPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -96,6 +96,36 @@ const SignUpPage = () => {
         }
     };
 
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     if (!validateForm()) return;
+    //     const data = {
+    //         first_name: formData.firstName,
+    //         last_name: formData.lastName,
+    //         email: formData.email,
+    //         password: formData.password
+    //     };
+
+    //     try {
+    //         setLoading(true);
+    //         const result = await signUpUser(data);
+    //         console.log('result', result)
+    //         if (result.success) {
+    //             toast.success(result.message)
+    //             router.push("/signin");
+    //         } else {
+    //             toast.error(result.message)
+    //             // Handle error
+    //         }
+    //     } catch (error) {
+    //         console.log('error', error)
+    //         toast.error('Server internal error')
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
@@ -105,24 +135,28 @@ const SignUpPage = () => {
             email: formData.email,
             password: formData.password
         };
+
         try {
-            setLoading(true);
-            const result = await signUpUser(data);
-            console.log('result', result)
-            if (result.success) {
-                toast.success(result.message)
-                router.push("/signin");
+            setLoading(true)
+            const res = await signupUser(data);
+            if (res.success) {
+                console.log("User created:", res.data);
+                toast.success(res.message);
+                router.push('/')
             } else {
-                toast.error(result.message)
-                // Handle error
+                console.log("Error:", res.error);
+                toast.error(res.message)
             }
         } catch (error) {
-            console.log('error', error)
-            toast.error('Server internal error')
+            console.log("Error:", error);
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
+
+
     };
+
+
     return (
         <div className="min-h-screen md:grid grid-cols-7">
             {/* LEFT SIDE IMAGE */}
@@ -254,7 +288,7 @@ const SignUpPage = () => {
 
                 <p className="mt-6 text-center text-[#4B5563] text-sm">
                     Already have an account?{" "}
-                    <Link href="/signin" className="text-blue-600 hover:underline">
+                    <Link href="/" className="text-blue-600 hover:underline">
                         Sign in
                     </Link>
                 </p>
