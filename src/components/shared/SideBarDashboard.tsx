@@ -5,8 +5,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Home, User, List, LogOut } from "lucide-react";
+import { Home, User, List, LogOut, X } from "lucide-react";
 
+interface SidebarProps {
+  onClose?: () => void;
+}
 
 function SidebarLink({ href, label, icon }: typeof NAVIGATION_ITEMS[number]) {
     const pathname = usePathname();
@@ -43,7 +46,7 @@ const USER_DATA = {
 
 
 
-export function Sidebar() {
+export function Sidebar({ onClose }: SidebarProps) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -69,6 +72,17 @@ export function Sidebar() {
 
     return (
         <aside className="w-64 bg-[#0D224A] text-white flex flex-col min-h-screen">
+            {/* Close Button - Only visible on mobile when onClose prop is provided */}
+            {onClose && (
+                <button 
+                    onClick={onClose}
+                    className="lg:hidden absolute top-4 right-4 p-2 text-white hover:bg-white/10 rounded-lg transition-colors z-10"
+                    aria-label="Close sidebar"
+                >
+                    <X size={20} />
+                </button>
+            )}
+
             <div className="p-6 flex-1">
                 {/* User Profile */}
                 <div className="flex flex-col items-center text-center mb-8">
