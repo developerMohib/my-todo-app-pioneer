@@ -58,7 +58,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
             if (result.success) {
                 toast.success(result.message);
-                router.push('/signin');
+                router.push('/');
             } else {
                 toast.error(result.message);
             }

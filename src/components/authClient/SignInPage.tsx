@@ -53,7 +53,7 @@ const SignInPage = () => {
                 email: formData.email,
                 password: formData.password
             });
-       
+            console.log(' result ', result)
             if (result.success) {
                 toast.success(result.message || 'Login successful!');
 
@@ -123,7 +123,7 @@ const SignInPage = () => {
                     </p>
                 </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
+                <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
                     <div>
                         <label className='text-[#0C0C0C]'>Email</label>
                         <input
@@ -186,7 +186,7 @@ const SignInPage = () => {
 
                 <p className="mt-6 text-center text-[#4B5563] text-sm">
                     Don&apos;t have an account?{" "}
-                    <Link href="/" className="text-blue-600 hover:underline">
+                    <Link href="/signup" className="text-blue-600 hover:underline">
                         Register Now
                     </Link>
                 </p>
