@@ -27,34 +27,34 @@ export default function ProfileDashboard() {
     };
 
     return (
-        <div className="min-h-screen p-8 bg-white rounded-lg">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-white">
+            <div className="w-full px-4 py-6 sm:px-6 lg:px-8">
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Account Information</h1>
-                    <hr className='h-0.5 w-3/12 bg-[#5272FF]' />
+                <div className="mb-6 sm:mb-8">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Account Information</h1>
+                    <hr className='h-0.5 w-full sm:w-3/12 bg-[#5272FF] mt-2' />
                 </div>
 
-                <div className="bg-white rounded-xl overflow-hidden">
-                    <div className="p-6 sm:p-8">
-                        <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="bg-white rounded-xl w-full">
+                    <div className="w-full p-4 sm:p-6 lg:p-8">
+                        <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
                             {/* Profile Photo Section */}
-                            <div className="flex flex-col sm:flex-row items-center gap-1 rounded-xl border border-gray-200 w-1/2 justify-start">
-                                <div className="relative p-8">
-                                    <div className="w-24 h-24 rounded-full bg-[#9F9F9F] flex items-center justify-start">
+                            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 rounded-xl border border-gray-200 w-full sm:w-1/2 p-4 sm:p-6">
+                                <div className="relative">
+                                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#9F9F9F] flex items-center justify-center">
                                     </div>
                                     <button
                                         type="button"
-                                        className="absolute bottom-8 right-9 bg-[#5272FF] text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+                                        className="absolute -bottom-1 -right-1 sm:bottom-2 sm:right-2 bg-[#5272FF] text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
                                     >
-                                        <Camera size={16} />
+                                        <Camera size={14} className="sm:size-4" />
                                     </button>
                                 </div>
 
-                                <div className="flex-1 text-center sm:text-left">
+                                <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
                                     <button
                                         type="button"
-                                        className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-white bg-[#5272FF] hover:bg-blue-600 transition-colors"
+                                        className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-white bg-[#5272FF] hover:bg-blue-600 transition-colors w-full sm:w-auto"
                                     >
                                         <Upload size={16} />
                                         Upload New Photo
@@ -63,10 +63,10 @@ export default function ProfileDashboard() {
                             </div>
 
                             {/* Form Fields */}
-                            <div className="space-y-6 border border-gray-200 p-6 rounded-xl">
+                            <div className="space-y-6 border border-gray-200 p-4 sm:p-6 rounded-xl">
                                 {/* Name Row */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                    <div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                    <div className="w-full">
                                         <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                             First Name
                                         </label>
@@ -78,7 +78,7 @@ export default function ProfileDashboard() {
                                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                         />
                                     </div>
-                                    <div>
+                                    <div className="w-full">
                                         <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                             Last Name
                                         </label>
@@ -93,7 +93,7 @@ export default function ProfileDashboard() {
                                 </div>
 
                                 {/* Email */}
-                                <div>
+                                <div className="w-full">
                                     <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                         Email
                                     </label>
@@ -107,8 +107,8 @@ export default function ProfileDashboard() {
                                 </div>
 
                                 {/* Address & Contact Row */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                    <div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                    <div className="w-full">
                                         <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                             Address
                                         </label>
@@ -120,7 +120,7 @@ export default function ProfileDashboard() {
                                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                         />
                                     </div>
-                                    <div>
+                                    <div className="w-full">
                                         <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                             Contact Number
                                         </label>
@@ -135,7 +135,7 @@ export default function ProfileDashboard() {
                                 </div>
 
                                 {/* Birthday */}
-                                <div>
+                                <div className="w-full">
                                     <label className="block text-sm font-medium text-[#0C0C0C] mb-2">
                                         Birthday
                                     </label>
@@ -149,16 +149,16 @@ export default function ProfileDashboard() {
                                 </div>
 
                                 {/* Action Buttons */}
-                                <div className="flex flex-col sm:flex-row gap-4 pt-6 w-2/3 mx-auto">
+                                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6 w-full sm:w-2/3 mx-auto">
                                     <button
                                         type="submit"
-                                        className="flex-1 bg-[#5272FF] text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                                        className="flex-1 bg-[#5272FF] text-white py-3 px-4 sm:px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-sm sm:text-base"
                                     >
                                         Save Changes
                                     </button>
                                     <button
                                         type="button"
-                                        className="flex-1 bg-[#8CA3CD] text-white py-3 px-6 rounded-lg font-semibold border border-gray-300 hover:bg-[#9F9F9F] transition-colors"
+                                        className="flex-1 bg-[#8CA3CD] text-white py-3 px-4 sm:px-6 rounded-lg font-semibold border border-gray-300 hover:bg-[#9F9F9F] transition-colors text-sm sm:text-base"
                                     >
                                         Cancel
                                     </button>

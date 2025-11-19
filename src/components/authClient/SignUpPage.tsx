@@ -4,13 +4,13 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
-import { signUpUser } from '@/services/AuthService';
-import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { signUpUser } from '@/services/AuthService';
 
 const SignUpPage = () => {
     const [showPassword, setShowPassword] = useState(false);
-
+    const [loading, setLoading] = useState(false)
     const router = useRouter();
 
     const [formData, setFormData] = useState({
@@ -96,149 +96,37 @@ const SignUpPage = () => {
         }
     };
 
-    // const handleSubmit = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-    //     if (validateForm()) {
-
-    //         console.log(formData);
-
-    //         const res = await signUpUser(formData)
-    //         if (res?.success) {
-    //             toast.success(res?.message);
-    //             router.push("/signin");
-    //         } else {
-
-    //             // if (publicId) {
-    //             //     await deleteImageFromCloudinary(publicId);
-    //             // }
-    //             toast.error(res?.message);
-    //         }
-
-    //         // Form is valid, proceed with submission
-    //         console.log('Form submittedsss:', formData);
-    //     }
-    // };
-
-    //     const handleSubmit = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-
-    //     if (validateForm()) {
-
-    //         // Convert Object → FormData
-    //         // const fd = new FormData();
-    //         // fd.append("first_name", formData.firstName);
-    //         // fd.append("last_name", formData.lastName);
-    //         // fd.append("email", formData.email);
-    //         // fd.append("password", formData.password);
-
-    //         // যদি confirmPassword দরকার না হয় backend-এ, পাঠাবে না
-    //         // fd.append("confirmPassword", formData.confirmPassword);
-
-    //         // console.log(fd);
-
-
-    //         // const res = await signUpUser(fd);
-    //         const res = await signUpUser({
-    //             first_name: formData?.firstName,
-    //             last_name: formData?.lastName,
-    //             email: formData?.email,
-    //             password: formData?.password
-    //         });
-
-    //         if (res?.success) {
-    //             toast.success(res?.message);
-    //             router.push("/signin");
-    //         } else {
-    //             toast.error(res?.message);
-    //         }
-
-    //         console.log("Final FormData Sent:", fd);
-    //     }
-    // };
-
-    // const handleSubmit = async (e: React.FormEvent) => {
-    //     e.preventDefault();
-
-    //     if (!validateForm()) return;
-
-    //     // Convert Object → FormData
-    //     const fd = new FormData();
-    //     fd.append("first_name", formData.firstName);
-    //     fd.append("last_name", formData.lastName);
-    //     fd.append("email", formData.email);
-    //     fd.append("password", formData.password);
-
-    //     // যদি confirmPassword backend-এ না লাগে, append করো না
-    //     // fd.append("confirmPassword", formData.confirmPassword);
-
-    //     console.log("FormData to send:", ...fd);
-
-    //     // Call signup function
-    //     const res = await signUpUser(fd);
-
-    //     if (res?.success) {
-    //         toast.success(res.message);
-    //         router.push("/signin");
-    //     } else {
-    //         toast.error(res.message);
-    //     }
-    // };
-
-//     const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-
-//     if (!validateForm()) return;
-
-//     // 🚀 Postman-এর মতো FormData তৈরি করো
-//     const fd = new FormData();
-//     fd.append("first_name", formData.firstName);  // SAME KEY NAME as POSTMAN
-//     fd.append("last_name", formData.lastName);
-//     fd.append("email", formData.email);
-//     fd.append("password", formData.password);
-
-//     console.log("Sending FormData:", [...fd.entries()]);
-
-//     // API Call
-//     const res = await signUpUser(fd);
-
-//     if (res?.success) {
-//         toast.success(res.message);
-//         router.push("/signin");
-//     } else {
-//         toast.error(res.message);
-//     }
-// };
-
-const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
-
-    const fd = new FormData();
-    fd.append("first_name", formData.firstName);
-    fd.append("last_name", formData.lastName);
-    fd.append("email", formData.email);
-    fd.append("password", formData.password);
-
-    const res = await signUpUser(fd);
-
-    console.log(res);
-    
-
-    if (res?.success) {
-        toast.success(res.message);
-        router.push("/signin");
-    } else {
-        toast.error(res.message);
-    }
-};
-
-
-
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!validateForm()) return;
+        const data = {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            password: formData.password
+        };
+        try {
+            setLoading(true);
+            const result = await signUpUser(data);
+            console.log('result', result)
+            if (result.success) {
+                toast.success(result.message)
+                router.push("/signin");
+            } else {
+                toast.error(result.message)
+                // Handle error
+            }
+        } catch (error) {
+            console.log('error', error)
+            toast.error('Server internal error')
+        } finally {
+            setLoading(false);
+        }
+    };
     return (
-        <div className="min-h-screen grid grid-cols-7">
+        <div className="min-h-screen md:grid grid-cols-7">
             {/* LEFT SIDE IMAGE */}
-            <div className="col-span-3 lg:flex items-center justify-center bg-[#E2ECF8] p-6">
+            <div className="col-span-3 lg:flex items-center justify-center bg-[#E2ECF8] md:p-6 md:block hidden ">
                 <Image
                     src="/signup-banner-Photoroom.png"
                     alt="Signup Illustration"
@@ -356,10 +244,10 @@ const handleSubmit = async (e: React.FormEvent) => {
                     </div>
 
                     <button
-                        type="submit"
+                        type="submit" disabled={loading}
                         className="w-full bg-[#5272FF] hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
                     >
-                        Sign Up
+                        {loading ? "Creating Account" : "Sign Up"}
                     </button>
                 </form>
 
