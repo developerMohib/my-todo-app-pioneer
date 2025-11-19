@@ -1,11 +1,10 @@
-import SignUpPage from "@/components/authClient/SignUpPage";
-// import Link from "next/link";
+import SignInPage from "@/components/authClient/SignInPage";
 
 export default function Home() {
 
   return (
     <main className="min-h-screen">
-      <SignUpPage />
+      <SignInPage />
     </main>
   );
 }
