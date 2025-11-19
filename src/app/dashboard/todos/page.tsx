@@ -1,6 +1,6 @@
 "use client"
 import Loader from "@/components/shared/Loader";
-import { ArrowDownUp, GripVertical, Search, Trash2, X } from "lucide-react";
+import { ArrowDownUp, GripVertical, Search, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
@@ -26,8 +26,9 @@ import {
 import { DragDropItem } from "@/components/dragdrop/DragDrop";
 import axios from "axios";
 import { IBackendTodo } from "@/services/AuthService/todosget";
+import { toast } from "sonner";
 
-const API_URL = `${process.env.NEXT_PUBLIC_BASE_API}/todos/`;
+const API_URL = `${process.env.NEXT_PUBLIC_BASE_API}`;
 const TodoPage = () => {
 
   const [openFilter, setOpenFilter] = useState(false);
@@ -45,6 +46,11 @@ const TodoPage = () => {
   const [loading, setLoading] = useState(true);
   const [errorr, setErrorr] = useState("");
   console.log(' to set toodo', todos)
+
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState("");
+  const [priority, setPriority] = useState("");
+  const [description, setDescription] = useState("");
 
   // Sensors for different input methods
   const sensors = useSensors(
@@ -132,7 +138,7 @@ const TodoPage = () => {
       if (!accessToken) {
         return { success: false, message: "No access token found" };
       }
-      const res = await axios.get(API_URL, {
+      const res = await axios.get(`${API_URL}/todos/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -149,6 +155,53 @@ const TodoPage = () => {
 
     fetchTodos();
   }, []);
+
+
+  // Task added here 
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title || !date || !priority) {
+      toast.warning("Please fill all required fields.");
+      return;
+    }
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      return { success: false, message: "No access token found" };
+    }
+    setLoading(true);
+
+    const taskdata = {
+      title,
+      todo_date: date,
+      priority: priority.toLowerCase(),
+      description,
+    }
+    console.log('task data', taskdata)
+    try {
+
+      const response = await axios.post(`${API_URL}/todos/`, taskdata, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      console.log("Task created:", response?.data?.detail);
+      toast.success('Task Crated')
+      setOpenModal(false); // Close modal
+      // Optionally, reset form
+      setTitle("");
+      setDate("");
+      setPriority("");
+      setDescription("");
+    } catch (error) {
+      console.error("Error creating task:", error);
+      toast.error("Failed to create task. Try again!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   if (loading) return <Loader />;
   if (errorr) return <p className="text-red-600">{errorr}</p>;
@@ -186,9 +239,8 @@ const TodoPage = () => {
               placeholder="Search Your Task Here..."
               className="w-full p-2 md:p-3 placeholder-[#4B5563] focus:outline-none text-sm md:text-base"
             />
-            <button className="inline-flex items-center gap-2 bg-[#5272FF] text-white px-3 md:px-4 rounded-md hover:bg-[#5272FF] transition-colors">
+            <button className="inline-flex items-center gap-2 bg-[#5272FF] text-white px-3 md:px-4 rounded-lg hover:bg-[#5272FF] transition-colors">
               <Search size={20} className="md:w-6 md:h-6" />
-              <span className="hidden sm:inline text-sm md:text-base">Search</span>
             </button>
           </div>
         </div>
@@ -205,7 +257,7 @@ const TodoPage = () => {
 
           {openFilter && (
             <div className="absolute mt-2 left-0 lg:left-auto lg:right-0 bg-white w-full lg:w-64 rounded-lg shadow-lg p-4 border border-gray-200 z-50">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">Date</h3>
+              <h3 className="font-semibold text-[#4B5563] mb-3 border-b-2 border-gray-300 text-xl ">Date</h3>
               <div className="space-y-2">
                 {[
                   { key: 'deadlineToday', label: 'Deadline Today' },
@@ -220,7 +272,7 @@ const TodoPage = () => {
                       onChange={() => handleFilterChange(filter.key as keyof typeof filters)}
                       className="w-4 h-4 text-[#5272FF] rounded border-gray-300 focus:ring-blue-500"
                     />
-                    <span className="text-sm text-gray-700 group-hover:text-gray-900">
+                    <span className="text-sm text-[#4B5563] group-hover:text-[#0C0C0C]">
                       {filter.label}
                     </span>
                   </label>
@@ -232,9 +284,9 @@ const TodoPage = () => {
       </div>
 
       {/* Tasks Section with Drag and Drop */}
-      <h1 className="mt-6 md:mt-10 mb-3 md:mb-4 font-semibold text-lg md:text-xl">
+      {todos.length > 0 && <h1 className="mt-6 md:mt-10 mb-3 md:mb-4 font-semibold text-lg md:text-xl">
         Your Task ({todos.length})
-      </h1>
+      </h1>}
 
       <div className="bg-white rounded-lg">
         <DndContext
@@ -244,48 +296,32 @@ const TodoPage = () => {
           onDragEnd={handleDragEnd}
           onDragCancel={handleDragCancel}
         >
-          {/* {todos && (<SortableContext items={todos?.map(todo => todo.id)} strategy={verticalListSortingStrategy}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-              {todos?.map((task) => (
-                <DragDropItem
-                  key={task.id}
-                  task={task}
-                  onEdit={handleTodoEdit}
-                  onDelete={handleTodoDelete}
-                />
-              ))}
+
+          {todos.length > 0 ? (
+            <SortableContext items={todos.map(todo => todo.id)} strategy={verticalListSortingStrategy}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                {todos.map((task) => (
+                  <DragDropItem
+                    key={task.id}
+                    task={task}
+                    onEdit={handleTodoEdit}
+                    onDelete={handleTodoDelete}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          ) : (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white rounded-lg">
+              <Image
+                src="/icon-no-projects.png"
+                alt="No Todos Yet"
+                width={400}
+                height={400}
+                className="h-32 w-auto md:h-40"
+              />
+              <p className="text-gray-600 text-lg mt-4">No Todo Yet</p>
             </div>
-          </SortableContext>
-          )} */}
-
-
-{todos.length > 0 ? (
-  // 👉 Todos Component
-  <SortableContext items={todos.map(todo => todo.id)} strategy={verticalListSortingStrategy}>
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-      {todos.map((task) => (
-        <DragDropItem
-          key={task.id}
-          task={task}
-          onEdit={handleTodoEdit}
-          onDelete={handleTodoDelete}
-        />
-      ))}
-    </div>
-  </SortableContext>
-) : (
-  // 👉 No Todo Image
-  <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white rounded-lg">
-    <Image
-      src="/icon-no-projects.png"
-      alt="No Todos Yet"
-      width={400}
-      height={400}
-      className="h-32 w-auto md:h-40"
-    />
-    <p className="text-gray-600 text-lg mt-4">No Todo Yet</p>
-  </div>
-)}
+          )}
 
 
 
@@ -298,7 +334,7 @@ const TodoPage = () => {
                       <GripVertical size={16} className="text-gray-400" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h2 className="text-base md:text-lg font-semibold text-gray-900 line-clamp-2">
+                      <h2 className="text-base md:text-lg font-semibold text-[#0C0C0C] line-clamp-2">
                         {activeTodo.title}
                       </h2>
                     </div>
@@ -314,7 +350,6 @@ const TodoPage = () => {
                     >
                       {activeTodo.priority}
                     </span>
-
                   </div>
                 </div>
                 <p className="text-xs md:text-sm text-gray-600 line-clamp-2 mb-3 ml-6">
@@ -338,120 +373,127 @@ const TodoPage = () => {
           {/* Modal Content */}
           <div className="bg-white rounded-lg relative w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="flex items-start justify-between p-4 md:p-5 pb-3 border-b">
+            <div className="flex items-start justify-between p-4 md:p-5 pb-3 ">
               <h3 className="text-lg md:text-xl font-semibold">
                 Add New Task
+                <hr className="h-0.5 bg-[#5272FF] font-bold w-3/5 " />
               </h3>
               <button
                 onClick={() => setOpenModal(false)}
                 type="button"
-                className="text-gray-500 hover:text-gray-700 rounded-lg text-sm p-1.5"
+                className="text-gray-500 hover:text-gray-700 text-sm border-b"
                 aria-label="Close modal"
               >
-                <X size={20} />
+                Go Back
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-4 md:p-5 space-y-4 md:space-y-6">
-              <form action="#">
+            <div className="p-4 md:p-5">
+              <form onSubmit={handleSubmit}>
                 <div>
-                  <label htmlFor="product-name" className="text-sm font-medium text-[#0C0C0C] block mb-2">
+                  <label
+                    htmlFor="title"
+                    className="text-sm font-bold text-[#0C0C0C] block mb-2"
+                  >
                     Title
                   </label>
                   <input
                     type="text"
-                    name="product-name"
-                    id="product-name"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                    id="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="bg-gray-50 border border-gray-300 text-[#0C0C0C] text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
                     required
                   />
                 </div>
 
                 <div className="mt-4">
-                  <label htmlFor="brand" className="text-sm font-medium text-gray-900 block mb-2">
+                  <label
+                    htmlFor="date"
+                    className="text-sm font-bold text-[#0C0C0C] block mb-2"
+                  >
                     Date
                   </label>
                   <input
                     type="date"
-                    name="brand"
-                    id="brand"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
+                    id="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    className="bg-gray-50 border border-gray-300 text-[#0C0C0C] text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
                     required
                   />
                 </div>
 
                 <div className="mt-4">
-                  <p className="text-sm font-medium text-gray-900 mb-3">Priority</p>
+                  <p className="text-sm font-bold text-[#0C0C0C] mb-3">Priority</p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <label className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-50">
-                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                      <span className="text-sm text-gray-700">Extreme</span>
-                      <input
-                        id="priority-extreme"
-                        name="priority"
-                        type="radio"
-                        required
-                        className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded ml-auto"
-                      />
-                    </label>
-                    <label className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-50">
-                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                      <span className="text-sm text-gray-700">Moderate</span>
-                      <input
-                        id="priority-moderate"
-                        name="priority"
-                        type="radio"
-                        required
-                        className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded ml-auto"
-                      />
-                    </label>
-                    <label className="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-50">
-                      <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
-                      <span className="text-sm text-gray-700">Low</span>
-                      <input
-                        id="priority-low"
-                        name="priority"
-                        type="radio"
-                        required
-                        className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded ml-auto"
-                      />
-                    </label>
+                    {["Extreme", "Moderate", "Low"].map((p) => (
+                      <label
+                        key={p}
+                        className="flex items-center gap-2 p-2 cursor-pointer "
+                      >
+                        <span
+                          className={`w-2 h-2 rounded-full ${p === "Extreme"
+                            ? "bg-red-500"
+                            : p === "Moderate"
+                              ? "bg-green-500"
+                              : "bg-yellow-500"
+                            }`}
+                        ></span>
+                        <span className="text-sm text-gray-700">{p}</span>
+                        <input
+                          type="checkbox"
+                          name="priority"
+                          value={p.toLowerCase()}
+                          checked={priority === p.toLowerCase()}
+                          onChange={() => setPriority(p.toLowerCase())}
+                          className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded ml-auto"
+                        />
+                      </label>
+                    ))}
                   </div>
                 </div>
 
                 <div className="mt-4">
-                  <label htmlFor="product-details" className="text-sm font-medium text-gray-900 block mb-2">
+                  <label
+                    htmlFor="description"
+                    className="text-sm font-bold text-[#0C0C0C] block mb-2"
+                  >
                     Task Description
                   </label>
                   <textarea
-                    id="product-details"
+                    id="description"
                     rows={4}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-3"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="bg-gray-50 border border-gray-300 text-[#0C0C0C] text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-3"
                     placeholder="Start writing here..."
-                    defaultValue={""}
                   />
+                </div>
+
+                {/* Modal Footer */}
+                <div className="p-4 md:p-5 border-t border-gray-200 rounded-b flex flex-col sm:flex-row justify-between items-center gap-3 mt-4">
+                  <button
+                    className={`text-white bg-[#5272FF] hover:bg-cyan-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full sm:w-auto transition-colors ${loading ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                    type="submit"
+                    disabled={loading}
+                  >
+                    {loading ? "Saving..." : "Save Task"}
+                  </button>
+                  <button
+                    onClick={() => setOpenModal(false)}
+                    className="text-white bg-[#EE0039] hover:bg-red-600 font-medium rounded-lg text-sm px-4 py-2.5 text-center flex items-center gap-2 w-full sm:w-auto justify-center transition-colors"
+                    type="button"
+                  >
+                    <Trash2 size={16} />
+                  </button>
                 </div>
               </form>
             </div>
 
-            {/* Modal Footer */}
-            <div className="p-4 md:p-5 border-t border-gray-200 rounded-b flex flex-col sm:flex-row justify-between items-center gap-3">
-              <button
-                className="text-white bg-[#5272FF] hover:bg-cyan-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full sm:w-auto transition-colors"
-                type="submit"
-              >
-                Save Task
-              </button>
-              <button
-                onClick={() => setOpenModal(false)}
-                className="text-white bg-[#EE0039] hover:bg-red-600 font-medium rounded-lg text-sm px-4 py-2.5 text-center flex items-center gap-2 w-full sm:w-auto justify-center transition-colors"
-                type="button"
-              >
-                <Trash2 size={16} />
-                Cancel
-              </button>
-            </div>
+
           </div>
         </div>
       )}

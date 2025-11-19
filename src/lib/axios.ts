@@ -4,7 +4,6 @@ import { cookies } from "next/headers";
 
 const app_axios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_API,
-  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },

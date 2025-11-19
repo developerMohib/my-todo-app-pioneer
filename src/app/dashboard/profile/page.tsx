@@ -3,37 +3,86 @@ import { useEffect, useState } from 'react';
 import { Camera, Upload } from 'lucide-react';
 import { getCurrentUser, UserProfile } from '@/services/AuthService/currentUser';
 import Loader from '@/components/shared/Loader';
+import axios from 'axios';
+import { toast } from 'sonner';
+import Image from 'next/image';
 
 export default function ProfileDashboard() {
     const [user, setUser] = useState<UserProfile | null>(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("");
+    const [preview, setPreview] = useState<string | null>(null);
+
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        address: '',
-        contactNumber: '',
-        birthday: ''
+        firstName: "",
+        lastName: "",
+        address: "",
+        contactNumber: "",
+        birthday: "",
+        bio: "",
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Handle form submission
-        console.log('Profile updated:', formData);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
     };
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            console.log("Selected file:", file);
+        if (e.target.files && file) {
+            setSelectedFile(e.target.files[0]);
+            const imageUrl = URL.createObjectURL(file);
+            setPreview(imageUrl);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const fd = new FormData();
+
+        // Only send updated fields (backend supports partial update)
+        if (formData.firstName) fd.append("first_name", formData.firstName);
+        if (formData.lastName) fd.append("last_name", formData.lastName);
+        if (formData.address) fd.append("address", formData.address);
+        if (formData.contactNumber) fd.append("contact_number", formData.contactNumber);
+        if (formData.birthday) fd.append("birthday", formData.birthday);
+        if (formData.bio) fd.append("bio", formData.bio);
+
+        // Image file
+        if (selectedFile) {
+            fd.append("profile_image", selectedFile);
+        }
+
+        try {
+            const accessToken = localStorage.getItem("accessToken");
+            setLoading(true)
+            const res = await axios.patch(
+                "https://todo-app.pioneeralpha.com/api/users/me/",
+                fd,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+            if (res.status === 200) {
+                toast.success("Profile updated successfully!");
+                window.location.reload()
+                
+            }
+            console.log('upadate', res)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.log("Update error:", error);
+            toast.error("Failed to update profile!");
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -72,7 +121,15 @@ export default function ProfileDashboard() {
                             {/* Profile Photo Section */}
                             <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 rounded-xl border border-gray-200 w-full sm:w-1/2 p-4 sm:p-6">
                                 <div className="relative">
-                                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#9F9F9F] flex items-center justify-center">
+
+                                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#9F9F9F] flex items-center justify-center overflow-hidden">
+                                        {preview ? (
+                                            <Image
+                                                src={preview}
+                                                alt="Preview" height={400} width={400}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : null}
                                     </div>
                                     <button
                                         type="button"
@@ -80,6 +137,7 @@ export default function ProfileDashboard() {
                                     >
                                         <Camera size={14} className="sm:size-4" />
                                     </button>
+
                                 </div>
 
                                 <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
@@ -140,7 +198,7 @@ export default function ProfileDashboard() {
                                     <input
                                         type="email"
                                         name="email"
-                                        value={formData.email || user?.email} readOnly disabled
+                                        value={user?.email} readOnly disabled
                                         onChange={handleChange}
                                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-gray-600 transition-colors"
                                     />
@@ -190,11 +248,11 @@ export default function ProfileDashboard() {
 
                                 {/* Action Buttons */}
                                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6 w-full sm:w-2/3 mx-auto">
-                                    <button
+                                    <button disabled={loading}
                                         type="submit"
                                         className="flex-1 bg-[#5272FF] text-white py-3 px-4 sm:px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-sm sm:text-base"
                                     >
-                                        Save Changes
+                                        {loading ? "Saving..." : "Save Changes"}
                                     </button>
                                     <button
                                         type="button"
