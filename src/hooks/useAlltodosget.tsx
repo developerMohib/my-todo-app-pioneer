@@ -13,6 +13,7 @@ export type Todo = {
   updated_at: string;
 };
 
+
 // API service functions
 const todoApi = {
   getAllTodos: async (): Promise<Todo[]> => {

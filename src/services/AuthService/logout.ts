@@ -40,6 +40,7 @@ export const logoutUser = async (): Promise<AuthResponse> => {
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
     localStorage.removeItem("rememberMe");
+    console.log(error)
 
     return {
       success: true,

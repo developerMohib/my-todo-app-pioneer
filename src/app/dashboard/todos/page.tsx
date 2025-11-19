@@ -1,6 +1,5 @@
 "use client"
 import Loader from "@/components/shared/Loader";
-import useAllTodos from "@/hooks/alltodosget";
 import { ArrowDownUp, GripVertical, Search, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -25,44 +24,11 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { DragDropItem } from "@/components/dragdrop/DragDrop";
+import axios from "axios";
+import { IBackendTodo } from "@/services/AuthService/todosget";
 
-
+const API_URL = `${process.env.NEXT_PUBLIC_BASE_API}/todos/`;
 const TodoPage = () => {
-  const initialTodos = [
-    {
-      id: "1",
-      title: "Complete project proposal",
-      description: "Finish the client project proposal document with all requirements",
-      completed: false,
-      priority: "high",
-      dueDate: new Date("2024-02-15"),
-      createdAt: new Date("2024-01-28"),
-      updatedAt: new Date("2024-01-28"),
-      tags: ["work", "urgent"]
-    },
-    {
-      id: "2",
-      title: "Buy groceries",
-      description: "Milk, eggs, bread, fruits, and vegetables",
-      completed: true,
-      priority: "medium",
-      dueDate: new Date("2024-01-30"),
-      createdAt: new Date("2024-01-27"),
-      updatedAt: new Date("2024-01-29"),
-      tags: ["personal", "shopping"]
-    },
-    {
-      id: "3",
-      title: "Schedule dentist appointment",
-      description: "Call Dr. Smith's office for routine checkup",
-      completed: false,
-      priority: "low",
-      createdAt: new Date("2024-01-29"),
-      updatedAt: new Date("2024-01-29"),
-      tags: ["health"]
-    },
-    // ... keep your other todos
-  ];
 
   const [openFilter, setOpenFilter] = useState(false);
   const [openModal, setOpenModal] = useState(false);
@@ -72,15 +38,13 @@ const TodoPage = () => {
     expiresIn10: false,
     expiresIn30: false
   });
-  const [todos, setTodos] = useState(initialTodos);
-  const [activeId, setActiveId] = useState<string | null>(null);
 
-  const {
-    data: apiTodos,
-    isLoading,
-    error,
-    refetch
-  } = useAllTodos();
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [todos, setTodos] = useState<IBackendTodo[] | []>([]);
+  const [loading, setLoading] = useState(true);
+  const [errorr, setErrorr] = useState("");
+  console.log(' toset toodo', todos)
 
   // Sensors for different input methods
   const sensors = useSensors(
@@ -89,7 +53,16 @@ const TodoPage = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenFilter(false);
+      }
+    };
 
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
   };
@@ -132,7 +105,7 @@ const TodoPage = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         console.log('delete todo', id)
-        refetch()
+        // refetch()
         // Remove from local state
         setTodos(prev => prev.filter(todo => todo.id !== id));
 
@@ -152,31 +125,44 @@ const TodoPage = () => {
     }));
   };
 
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setOpenFilter(false);
+    const fetchTodos = async () => {
+      setLoading(true);
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        return { success: false, message: "No access token found" };
       }
+      const res = await axios.get(API_URL, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log('response.data', res.data)
+
+      if (res.status && res.data) {
+        setTodos(res.data.results);
+      } else {
+        setErrorr(res.statusText || "Failed to fetch todos");
+      }
+      setLoading(false);
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    fetchTodos();
   }, []);
+
+  if (loading) return <Loader />;
+  if (errorr) return <p className="text-red-600">{errorr}</p>;
+
+
 
   // Get the active todo for drag overlay
   const activeTodo = activeId ? todos.find(todo => todo.id === activeId) : null;
 
-  if (isLoading) return <Loader />;
+  console.log('all todoooooooos', todos);
 
-  if (error) return <div>Error: {error.message}</div>;
-
-  console.log('all todos', apiTodos);
-
-  if (todos.length === 0) {
+  if (todos?.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] bg-red-600 rounded-lg">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] bg-white h-screen rounded-lg">
         <Image
           src={"/icon-no-projects.png"}
           alt="No Todos Yet"
@@ -273,7 +259,7 @@ const TodoPage = () => {
           onDragEnd={handleDragEnd}
           onDragCancel={handleDragCancel}
         >
-          <SortableContext items={todos?.map(todo => todo.id)} strategy={verticalListSortingStrategy}>
+          {todos && (<SortableContext items={todos?.map(todo => todo.id)} strategy={verticalListSortingStrategy}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
               {todos?.map((task) => (
                 <DragDropItem
@@ -285,7 +271,7 @@ const TodoPage = () => {
               ))}
             </div>
           </SortableContext>
-
+          )}
           <DragOverlay>
             {activeTodo ? (
               <div className="p-4 md:p-5 rounded-xl bg-white shadow-lg border-2 border-blue-500 opacity-90">
@@ -301,12 +287,17 @@ const TodoPage = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`px-2 py-1 rounded-lg text-xs font-medium ${activeTodo.priority === 'high' ? 'text-red-600 bg-[#FEE2E2]' :
-                        activeTodo.priority === 'medium' ? 'bg-green-100 text-green-800' :
-                          'bg-yellow-100 text-yellow-800'
-                      }`}>
+                    <span
+                      className={`px-2 py-1 rounded-lg text-xs font-medium ${activeTodo.priority === "high"
+                        ? "text-red-600 bg-[#FEE2E2]"
+                        : activeTodo.priority === "moderate"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-yellow-100 text-yellow-800"
+                        }`}
+                    >
                       {activeTodo.priority}
                     </span>
+
                   </div>
                 </div>
                 <p className="text-xs md:text-sm text-gray-600 line-clamp-2 mb-3 ml-6">

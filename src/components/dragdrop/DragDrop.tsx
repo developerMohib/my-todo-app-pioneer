@@ -4,20 +4,33 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { PenLine, Trash2, GripVertical } from "lucide-react";
 
-interface Todo {
+// interface Todo {
+//   id: string;
+//   title: string;
+//   description: string;
+//   completed: boolean;
+//   priority: string;
+//   dueDate?: Date;
+//   createdAt: Date;
+//   updatedAt: Date;
+//   tags: string[];
+// }
+
+export interface IBackendTodo {
   id: string;
   title: string;
   description: string;
-  completed: boolean;
-  priority: string;
-  dueDate?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  tags: string[];
+  priority: "low" | "moderate" | "high";
+  is_completed: boolean;
+  position: string;
+  todo_date: string;
+  created_at: string;
+  updated_at: string;
 }
 
+
 interface SortableTodoItemProps {
-  task: Todo;
+  task: IBackendTodo;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
 }
@@ -31,7 +44,7 @@ export function DragDropItem({ task, onEdit, onDelete }: SortableTodoItemProps) 
     transition,
     isDragging,
   } = useSortable({ id: task.id });
-console.log('task ',task)
+  console.log('task ', task)
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -42,27 +55,31 @@ console.log('task ',task)
     <div
       ref={setNodeRef}
       style={style}
-      className={`p-4 md:p-5 rounded-xl bg-white shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 ${
-        isDragging ? 'shadow-lg ring-2 ring-blue-500 z-10' : ''
-      }`}
+      className={`p-4 md:p-5 rounded-xl bg-white shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 ${isDragging ? 'shadow-lg ring-2 ring-blue-500 z-10' : ''
+        }`}
     >
       <div className="flex items-start justify-between mb-2">
-        <div className="flex items-start gap-2 flex-1">  
+        <div className="flex items-start gap-2 flex-1">
           <div className="flex-1 min-w-0">
             <h2 className="text-base md:text-lg font-semibold text-gray-900 line-clamp-2">
               {task.title}
             </h2>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
-          <span className={`px-2 py-1 rounded-lg text-xs font-medium ${
-            task.priority === 'high' ? 'text-red-600 bg-[#FEE2E2]' :
-            task.priority === 'medium' ? 'bg-green-100 text-green-800' :
-            'bg-yellow-100 text-yellow-800'
-          }`}>
+
+          <span
+            className={`px-2 py-1 rounded-lg text-xs font-medium ${task.priority === "high"
+              ? "text-red-600 bg-[#FEE2E2]"
+              : task.priority === "moderate"
+                ? "bg-green-100 text-green-800"
+                : "bg-yellow-100 text-yellow-800"
+              }`}
+          >
             {task.priority}
           </span>
+
 
           {/* Drag Handle */}
           <button
@@ -83,9 +100,9 @@ console.log('task ',task)
       {/* Action Icons */}
       <div className="flex items-center justify-between gap-2 ml-6">
         <div className="flex-1">
-          {task.dueDate && (
+          {task.todo_date && (
             <p className="text-xs text-gray-500">
-              Due: {task.dueDate.toLocaleDateString()}
+              Date: {task.todo_date}
             </p>
           )}
         </div>

@@ -15,6 +15,7 @@ app_axios.interceptors.request.use(
   async (config) => {
     const cookieStore = await cookies();
     const token = cookieStore.get("accessToken")?.value;
+    console.log('roken',token)
     if (token) {
       config.headers.Authorization = `${token}`;
     }
@@ -26,23 +27,3 @@ app_axios.interceptors.request.use(
 );
 
 export default app_axios;
-
-// "use client";
-
-// import axios from "axios";
-
-// const app_axios = axios.create({
-//   baseURL: process.env.NEXT_PUBLIC_BASE_API,
-//   withCredentials: true,
-// });
-
-// // get tokens from localStorage
-// app_axios.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("accessToken");
-//   if (token) {
-//     config.headers.Authorization = token;
-//   }
-//   return config;
-// });
-
-// export default app_axios;
