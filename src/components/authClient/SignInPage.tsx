@@ -1,5 +1,5 @@
 "use client";
-import { loginUser } from '@/services/AuthService';
+import { signInUser } from '@/services/AuthService/signin';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -15,6 +15,7 @@ interface FormData {
 
 const SignInPage = () => {
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [formData, setFormData] = useState<FormData>({
         email: '',
         password: '',
@@ -31,67 +32,29 @@ const SignInPage = () => {
         }));
     };
 
-    // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        // Basic validation
-        if (!formData.email || !formData.password) {
-            toast.error('Please fill in all fields');
-            return;
-        }
-
-        if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            toast.error('Please enter a valid email address');
-            return;
-        }
-
-        setLoading(true);
-
+        setErrorMessage("");
+        const data = { email: formData.email, password: formData.password };
         try {
-            const result = await loginUser({
-                email: formData.email,
-                password: formData.password
-            });
-            console.log(' result ', result)
-            if (result.success) {
-                toast.success(result.message || 'Login successful!');
+            setLoading(true)
+            const res = await signInUser(data);
+            if (res.success) {
+                toast.success(res.message)
+                router.push('/dashboard')
+            }
 
-                // Store token if available
-                // if (result.data?.refresh) {
-                //     localStorage.setItem('authToken', result.token);
-                //     // If using remember me, store in more persistent storage
-                //     if (formData.rememberMe) {
-                //         localStorage.setItem('rememberMe', 'true');
-                //     }
-                // }
-
-                // Store user data if available
-                // if (result.data?.user) {
-                //     localStorage.setItem('user', JSON.stringify(result.data.user));
-                // }
-
-                // Redirect to dashboard or home page
-                router.push('/dashboard'); // Change to your desired route
-
-            } else {
-                toast.error(result.message || 'Login failed');
-
-                // Handle specific error cases
-                if (result.status === 401) {
-                    // Invalid credentials
-                    setFormData(prev => ({ ...prev, password: '' }));
-                }
+            if (!res.success) {
+                setErrorMessage(res.message);
+                return;
             }
         } catch (error) {
-            console.error('Login error:', error);
-            toast.error('An unexpected error occurred');
+            console.log(error)
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
+
     };
-
-
 
 
 
@@ -125,6 +88,9 @@ const SignInPage = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
                     <div>
+                        {errorMessage && (
+                            <p className="bg-red-100 text-red-700 p-2 rounded text-sm">{errorMessage}</p>
+                        )}
                         <label className='text-[#0C0C0C]'>Email</label>
                         <input
                             type="email"
