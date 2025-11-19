@@ -13,9 +13,6 @@ export interface IBackendTodo {
   updated_at: string;
 }
 
-
-
-
 const API_URL = `${process.env.NEXT_PUBLIC_BASE_API}/todos/`;
 
 export const getAllTodos = async (): Promise<{ success: boolean; data?: IBackendTodo[]; message?: string }> => {

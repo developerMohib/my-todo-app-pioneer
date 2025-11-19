@@ -14,6 +14,7 @@ export interface UserProfile {
   bio: string;
 }
 
+
 export const getCurrentUser = async (): Promise<{
   success: boolean;
   data?: UserProfile;
