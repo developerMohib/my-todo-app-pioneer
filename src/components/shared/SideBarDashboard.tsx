@@ -41,18 +41,10 @@ const NAVIGATION_ITEMS = [
     { href: "/dashboard/profile", icon: <User size={20} />, label: "Account Information" },
 ] as const;
 
-const USER_DATA = {
-    name: "Leroy Jenkins",
-    email: "Full-stack@gmail.com",
-    avatar: "https://avatars.githubusercontent.com/u/92154638?v=4"
-} as const;
-
-
 export function Sidebar({ onClose }: SidebarProps) {
     const [loading, setLoading] = useState(false);
-    const [user, setUser] = useState<UserProfile | null>(null)
     const router = useRouter();
-
+    const [user, setUser] = useState<UserProfile | null>(null)
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -113,8 +105,8 @@ export function Sidebar({ onClose }: SidebarProps) {
                 {/* User Profile */}
                 <div className="flex flex-col items-center text-center mb-8">
                     <Image
-                        src={USER_DATA.avatar}
-                        alt={`${USER_DATA.name}'s avatar`}
+                        src={user?.profile_image || "https://avatars.githubusercontent.com/u/92154638?v=4"}
+                        alt={`${user?.first_name}'s avatar`}
                         width={128}
                         height={128}
                         className="w-24 h-24 rounded-full object-cover border border-white"

@@ -1,4 +1,3 @@
-import axios from "axios";
 
 export interface AuthResponse {
   success: boolean;
@@ -14,15 +13,7 @@ export interface AuthResponse {
 
 export const logoutUser = async (): Promise<AuthResponse> => {
   try {
-    const refreshToken = localStorage.getItem("refreshToken");
-
-    // If you have a logout endpoint, call it
-    if (refreshToken) {
-      await axios.post("/users/logout/", {
-        refresh: refreshToken,
-      });
-    }
-
+   
     // Clear local storage
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
