@@ -1,51 +1,59 @@
 "use client"
-import { useState } from "react";
-import { Trash2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { UseQueryResult } from "@tanstack/react-query";
 import { IBackendTodo } from "@/services/AuthService/todosget";
 
-interface CreateTodoModalProps {
+interface EditTodoModalProps {
     openModal: boolean;
     setOpenModal: (open: boolean) => void;
     refetch: UseQueryResult<IBackendTodo[], Error>['refetch'];
+    todo: IBackendTodo | null;
 }
 
-// Form field props interface
 interface FormFieldProps {
     label: string;
     id: string;
-    type: "text" | "date" | "email" | "password" | "number"; // Add more types as needed
+    type: "text" | "date" | "email" | "password" | "number";
     value: string;
     onChange: (value: string) => void;
     required?: boolean;
 }
 
-// Priority selector props interface
 interface PrioritySelectorProps {
     priority: string;
     setPriority: (priority: string) => void;
 }
 
-// Modal footer props interface
 interface ModalFooterProps {
     loading: boolean;
     onClose: () => void;
+    onDelete?: () => void;
 }
 
 const API_URL = `${process.env.NEXT_PUBLIC_BASE_API}`;
 
-const CreateTodoModal = ({ openModal, setOpenModal, refetch }: CreateTodoModalProps) => {
+const EditTodoModal = ({ openModal, setOpenModal, refetch, todo }: EditTodoModalProps) => {
     const [loading, setLoading] = useState(false);
     const [title, setTitle] = useState("");
     const [date, setDate] = useState("");
     const [priority, setPriority] = useState("");
     const [description, setDescription] = useState("");
 
+    // Initialize form with todo data when modal opens
+    useEffect(() => {
+        if (todo) {
+            setTitle(todo.title || "");
+            setDate(todo.todo_date ? new Date(todo.todo_date).toISOString().split('T')[0] : "");
+            setPriority(todo.priority || "");
+            setDescription(todo.description || "");
+        }
+    }, [todo, openModal]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!title || !date || !priority) {
+        if (!title || !date || !priority || !todo) {
             toast.warning("Please fill all required fields.");
             return;
         }
@@ -65,20 +73,22 @@ const CreateTodoModal = ({ openModal, setOpenModal, refetch }: CreateTodoModalPr
         };
 
         try {
-            const response = await axios.post(`${API_URL}/todos/`, taskdata, {
+            const response = await axios.put(`${API_URL}/todos/${todo.id}/`, taskdata, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
             });
-            if(response.status===200){
-                toast.success('Task Created');
+            console.log('resp update', response)
+            if (response.status === 200) {
+                toast.success(response.statusText || 'Task Updated Successfully');
                 setOpenModal(false);
                 resetForm();
-                await refetch()
+                await refetch();
+                window.location.reload()
             }
         } catch (error) {
-            console.error("Error creating task:", error);
-            toast.error("Failed to create task. Try again!");
+            console.error("Error updating task:", error);
+            toast.error("Failed to update task. Try again!");
         } finally {
             setLoading(false);
         }
@@ -91,7 +101,7 @@ const CreateTodoModal = ({ openModal, setOpenModal, refetch }: CreateTodoModalPr
         setDescription("");
     };
 
-    if (!openModal) return null;
+    if (!openModal || !todo) return null;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -103,7 +113,7 @@ const CreateTodoModal = ({ openModal, setOpenModal, refetch }: CreateTodoModalPr
             <div className="bg-white rounded-lg relative w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                 <div className="flex items-start justify-between p-4 md:p-5 pb-3">
                     <h3 className="text-lg md:text-xl font-semibold">
-                        Add New Task
+                        Edit Task
                         <hr className="h-0.5 bg-[#5272FF] font-bold w-3/5" />
                     </h3>
                     <button
@@ -162,7 +172,7 @@ const CreateTodoModal = ({ openModal, setOpenModal, refetch }: CreateTodoModalPr
     );
 };
 
-// Sub-components for the modal with specific types
+// Reusable sub-components (same as CreateTodoModal)
 const FormField = ({ label, id, type, value, onChange, required }: FormFieldProps) => (
     <div className="mt-4">
         <label htmlFor={id} className="text-sm font-bold text-[#0C0C0C] block mb-2">
@@ -207,22 +217,26 @@ const PrioritySelector = ({ priority, setPriority }: PrioritySelectorProps) => (
 
 const ModalFooter = ({ loading, onClose }: ModalFooterProps) => (
     <div className="p-4 md:p-5 border-t border-gray-200 rounded-b flex flex-col sm:flex-row justify-between items-center gap-3 mt-4">
-        <button
-            className={`text-white bg-[#5272FF] hover:bg-cyan-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full sm:w-auto transition-colors ${loading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-            type="submit"
-            disabled={loading}
-        >
-            {loading ? "Saving..." : "Save Task"}
-        </button>
-        <button
-            onClick={onClose}
-            className="text-white bg-[#EE0039] hover:bg-red-600 font-medium rounded-lg text-sm px-4 py-2.5 text-center flex items-center gap-2 w-full sm:w-auto justify-center transition-colors"
-            type="button"
-        >
-            <Trash2 size={16} />
-        </button>
+        <div className="flex gap-3 w-full sm:w-auto">
+            <button
+                className={`text-white bg-[#5272FF] hover:bg-cyan-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center w-full sm:w-auto transition-colors ${loading ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                type="submit"
+                disabled={loading}
+            >
+                {loading ? "Updating..." : "Update Task"}
+            </button>
+        </div>
+        <div className="flex gap-3 w-full sm:w-auto">
+            <button
+                onClick={onClose}
+                className="text-gray-700 bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center w-full sm:w-auto transition-colors"
+                type="button"
+            >
+                Cancel
+            </button>
+        </div>
     </div>
 );
 
-export default CreateTodoModal;
+export default EditTodoModal;

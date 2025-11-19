@@ -110,11 +110,9 @@ const SignUpPage = () => {
             setLoading(true)
             const res = await signupUser(data);
             if (res.success) {
-                console.log("User created:", res.data);
                 toast.success(res.message);
                 router.push('/')
             } else {
-                console.log("Error:", res.error);
                 toast.error(res.message)
             }
         } catch (error) {
@@ -122,11 +120,7 @@ const SignUpPage = () => {
         } finally {
             setLoading(false)
         }
-
-
     };
-
-
     return (
         <div className="min-h-screen md:grid grid-cols-7">
             {/* LEFT SIDE IMAGE */}
